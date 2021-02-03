@@ -11,6 +11,10 @@ import androidx.fragment.app.DialogFragment;
 
 public class AlertDialogFragment extends DialogFragment {
 
+    /**************************************
+     * Main initialized Method.  *
+     **************************************/
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

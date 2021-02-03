@@ -2,6 +2,10 @@ package com.timapps.weatha;
 
 public class CurrentWeather {
 
+    /**************************************
+     * initialized Variables for Object.  *
+     **************************************/
+
     private String locationLabel;
     private String icon;
     private double temperature;
@@ -9,6 +13,10 @@ public class CurrentWeather {
     private double precipChance;
     private String summary;
 
+
+    /****************************************
+     * Methods and Actions that do things  *
+     ****************************************/
 
     public int getIconId() {
 
@@ -73,6 +81,9 @@ public class CurrentWeather {
         return iconId;
     }
 
+    /************************
+     * Getters and setters  *
+     ************************/
 
     public String getLocationLabel() {
         return locationLabel;

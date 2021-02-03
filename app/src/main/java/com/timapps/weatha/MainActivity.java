@@ -1,7 +1,6 @@
 package com.timapps.weatha;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -29,8 +28,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String TAG = MainActivity.class.getSimpleName();
-    CurrentWeather currentWeather;
+
+    /*************************************
+     * Variables for Buttons and Field.  *
+     *************************************/
 
     private TextView weatherDescText;
     private TextView weatherTempText;
@@ -39,6 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView artCreditText;
     private ImageView weatherDataCreditImage;
 
+
+    /*************************************
+     *Init Variables  *
+     *************************************/
+
+    public static final String TAG = MainActivity.class.getSimpleName();
+    CurrentWeather currentWeather;
+
+    /**************************************
+     * Main initialized Method.  *
+     **************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    /****************************************
+     * Methods and Actions that do things  *
+     ****************************************/
+
 
     private void findViews() {
         weatherDescText = (TextView) findViewById(R.id.weatherDescText);
