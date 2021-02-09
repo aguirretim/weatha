@@ -2,7 +2,9 @@ package com.timapps.weatha.ui.main;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -72,11 +74,33 @@ public class MainFragment extends Fragment {
         cityLableText.setText(currentWeather.getLocationLabel());
 */
 
+        weatherDataCreditImage.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("https://openweathermap.org"));
+                startActivity(intent);
+            }
+        });
+
+        artCreditText.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("http://pokemon.com"));
+                startActivity(intent);
+            }
+        });
 
         return view;
 
 
     }
+
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
