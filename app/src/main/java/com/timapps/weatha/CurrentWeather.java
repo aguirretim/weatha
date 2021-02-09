@@ -18,7 +18,7 @@ public class CurrentWeather {
      * Methods and Actions that do things  *
      ****************************************/
 
-    public int getIconId() {
+    public int getIconId(String icon) {
 
         int iconId = R.drawable.clear_skyd;
 

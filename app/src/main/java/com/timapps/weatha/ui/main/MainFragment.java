@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.timapps.weatha.CurrentWeather;
+import com.timapps.weatha.MainActivity;
 import com.timapps.weatha.R;
 
 
@@ -40,6 +43,9 @@ public class MainFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
 
+        MainActivity activity = (MainActivity) getActivity();
+        CurrentWeather currentWeatherFromMainActivity = activity.getMyData();
+
         weatherDescText = (TextView) view.findViewById(R.id.weatherDescText);
         weatherTempText = (TextView) view.findViewById(R.id.weatherTempText);
         weatherIcon = (ImageView)view.findViewById(R.id.weatherIcon);
@@ -47,14 +53,27 @@ public class MainFragment extends Fragment {
         artCreditText = (TextView) view.findViewById(R.id.artCreditText);
         weatherDataCreditImage = (ImageView) view.findViewById(R.id.weatherDataCreditImage);
 
+        while (currentWeatherFromMainActivity == null){
+             activity = (MainActivity) getActivity();
+             currentWeatherFromMainActivity = activity.getMyData();
+        }
 
+        if (currentWeatherFromMainActivity != null){
+            weatherTempText.setText((int)currentWeatherFromMainActivity.getTemperature() + "\u00B0");
+            weatherDescText.setText(currentWeatherFromMainActivity.getSummary());
+            cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel());
+            weatherIcon.setImageResource((currentWeatherFromMainActivity.
+                    getIconId(currentWeatherFromMainActivity.getIcon())));
+        }
  /*       //weatherDescText.setText(currentWeather.getSummary());
         weatherTempText.setText(currentWeather.getTemperature() + "");
         Drawable drawable = getResources().getDrawable(currentWeather.getIconId());
         weatherIcon.setImageDrawable(drawable);
         cityLableText.setText(currentWeather.getLocationLabel());
 */
-        return inflater.inflate(R.layout.main_fragment, container, false);
+
+
+        return view;
 
 
     }

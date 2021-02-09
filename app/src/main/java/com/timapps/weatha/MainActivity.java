@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
+
+
         String apiKey = "Fill Api Key Here";
 
         double latitude = 47.606209;
@@ -123,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
     /****************************************
      * Methods and Actions that do things  *
      ****************************************/
-
+    public CurrentWeather getMyData() {
+        return currentWeather;
+    }
 
     private void findViews() {
         weatherDescText = (TextView) findViewById(R.id.weatherDescText);
