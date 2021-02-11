@@ -1,5 +1,6 @@
 package com.timapps.weatha.ui.main;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.timapps.weatha.CurrentWeather;
 import com.timapps.weatha.MainActivity;
@@ -25,19 +27,35 @@ import com.timapps.weatha.R;
 
 public class MainFragment extends Fragment {
 
+    /*************************************
+     *Init Variables  *
+     *************************************/
+
     private MainViewModel mViewModel;
 
+    /*************************************
+     * Variables for Buttons and Field.  *
+     *************************************/
     private TextView weatherDescText;
     private TextView weatherTempText;
     private ImageView weatherIcon;
     private TextView cityLableText;
     private TextView artCreditText;
     private ImageView weatherDataCreditImage;
+    private ConstraintLayout weatherContainer;
+    private ConstraintLayout cityContainer;
 
 
     public static MainFragment newInstance() {
         return new MainFragment();
     }
+
+ public static final String KEY_RECIPE_INDEX ="recipe_index";
+    CurrentWeather  currentWeatherFromMainActivity;
+
+    /**************************************
+     * Main initialized Method.  *
+     **************************************/
 
     @Nullable
     @Override
@@ -45,8 +63,8 @@ public class MainFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
 
+
         MainActivity activity = (MainActivity) getActivity();
-        CurrentWeather currentWeatherFromMainActivity = activity.getMyData();
 
         weatherDescText = (TextView) view.findViewById(R.id.weatherDescText);
         weatherTempText = (TextView) view.findViewById(R.id.weatherTempText);
@@ -54,6 +72,8 @@ public class MainFragment extends Fragment {
         cityLableText = (TextView) view.findViewById(R.id.cityLableText);
         artCreditText = (TextView) view.findViewById(R.id.artCreditText);
         weatherDataCreditImage = (ImageView) view.findViewById(R.id.weatherDataCreditImage);
+        weatherContainer = (ConstraintLayout) view.findViewById(R.id.weatherContainer);
+        cityContainer = (ConstraintLayout) view.findViewById(R.id.cityContainer);
 
         while (currentWeatherFromMainActivity == null){
              activity = (MainActivity) getActivity();
@@ -63,16 +83,14 @@ public class MainFragment extends Fragment {
         if (currentWeatherFromMainActivity != null){
             weatherTempText.setText((int)currentWeatherFromMainActivity.getTemperature() + "\u00B0");
             weatherDescText.setText(currentWeatherFromMainActivity.getSummary());
-            cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel());
+            cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel()+"");
             weatherIcon.setImageResource((currentWeatherFromMainActivity.
                     getIconId(currentWeatherFromMainActivity.getIcon())));
         }
- /*       //weatherDescText.setText(currentWeather.getSummary());
-        weatherTempText.setText(currentWeather.getTemperature() + "");
-        Drawable drawable = getResources().getDrawable(currentWeather.getIconId());
-        weatherIcon.setImageDrawable(drawable);
-        cityLableText.setText(currentWeather.getLocationLabel());
-*/
+
+        /****************************************
+         * On Click Buttons  *
+         ****************************************/
 
         weatherDataCreditImage.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -94,12 +112,23 @@ public class MainFragment extends Fragment {
             }
         });
 
+        MainActivity finalActivity = activity;
+        weatherContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(finalActivity,
+                        "Refreshing data"+ getArguments().getInt(KEY_RECIPE_INDEX),
+                        Toast.LENGTH_LONG
+                ).show();
+                finalActivity.weatherCall();
+            }
+        });
+
+
         return view;
 
 
     }
-
-
 
 
     @Override
@@ -110,5 +139,16 @@ public class MainFragment extends Fragment {
     }
 
 
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
