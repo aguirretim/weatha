@@ -41,7 +41,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/weatherContainer"
-        android:layout_width="100dp"
+        android:layout_width="130dp"
         android:layout_height="100dp"
         android:background="#34000000"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +78,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cityContainer"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="#34000000"
