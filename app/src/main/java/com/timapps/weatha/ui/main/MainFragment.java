@@ -45,13 +45,37 @@ public class MainFragment extends Fragment {
     private ConstraintLayout weatherContainer;
     private ConstraintLayout cityContainer;
 
+    /**************************************
+     * Main initialized variables.  *
+     **************************************/
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    private CurrentWeather currentWeatherFromMainActivity;
+    private String locationLabel;
+    private String icon;
+    private double temperature;
+    private double humidity;
+    private double precipChance;
+    private String summary;
+
+
+    public static MainFragment newInstance(CurrentWeather currentWeather) {
+        MainFragment frag = new MainFragment();
+        //Make arguments to put into the fragment before we return it
+        Bundle arguments = new Bundle();
+        //if you make CurrentWeather serializable (by adding certain code to that class)
+        //you can just pass the current weather object here
+        //arguments.putSerializable();
+        arguments.putDouble("humidity", currentWeather.getHumidity());
+        arguments.putDouble("temp", currentWeather.getTemperature());
+        arguments.putParcelable("currentWeatherKey", currentWeather);
+        frag.setArguments(arguments);
+        return frag;
     }
+    //empty constructor neededed?
 
- public static final String KEY_RECIPE_INDEX ="recipe_index";
-    CurrentWeather  currentWeatherFromMainActivity;
+    public MainFragment(){
+
+    }
 
     /**************************************
      * Main initialized Method.  *
@@ -75,18 +99,12 @@ public class MainFragment extends Fragment {
         weatherContainer = (ConstraintLayout) view.findViewById(R.id.weatherContainer);
         cityContainer = (ConstraintLayout) view.findViewById(R.id.cityContainer);
 
-        while (currentWeatherFromMainActivity == null){
-             activity = (MainActivity) getActivity();
-             currentWeatherFromMainActivity = activity.getMyData();
-        }
+        weatherTempText.setText((int)currentWeatherFromMainActivity.getTemperature() + "\u00B0");
+        weatherDescText.setText(currentWeatherFromMainActivity.getSummary());
+        cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel()+"");
+        weatherIcon.setImageResource((currentWeatherFromMainActivity.
+                getIconId(currentWeatherFromMainActivity.getIcon())));
 
-        if (currentWeatherFromMainActivity != null){
-            weatherTempText.setText((int)currentWeatherFromMainActivity.getTemperature() + "\u00B0");
-            weatherDescText.setText(currentWeatherFromMainActivity.getSummary());
-            cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel()+"");
-            weatherIcon.setImageResource((currentWeatherFromMainActivity.
-                    getIconId(currentWeatherFromMainActivity.getIcon())));
-        }
 
         /****************************************
          * On Click Buttons  *
@@ -117,10 +135,10 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(finalActivity,
-                        "Refreshing data"+ getArguments().getInt(KEY_RECIPE_INDEX),
+                        "Refreshing data not working yet",
                         Toast.LENGTH_LONG
                 ).show();
-                finalActivity.weatherCall();
+
             }
         });
 
@@ -132,23 +150,16 @@ public class MainFragment extends Fragment {
 
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        // TODO: Use the ViewModel
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //this is where we have access to the arguments we put in the newInstance
+        if (getArguments() != null) {
+            currentWeatherFromMainActivity = getArguments().getParcelable("currentWeatherKey");
+        }
+
+
     }
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-

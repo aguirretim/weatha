@@ -1,6 +1,13 @@
 package com.timapps.weatha;
 
-public class CurrentWeather {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+public class CurrentWeather implements Parcelable {
 
     /**************************************
      * initialized Variables for Object.  *
@@ -12,6 +19,32 @@ public class CurrentWeather {
     private double humidity;
     private double precipChance;
     private String summary;
+    private long time;
+    private String timeZone;
+
+    /**************************************
+     * Constructor for Object.  *
+     **************************************/
+
+    public CurrentWeather(String locationLabel,
+                          String icon,
+                          double temperature,
+                          double humidity,
+                          double precipChance,
+                          String summary,
+                          long time,
+                          String timeZone) {
+        this.locationLabel = locationLabel;
+        this.icon = icon;
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.precipChance = precipChance;
+        this.summary = summary;
+        this.time = time;
+        this.timeZone = timeZone;
+    }
+
+
 
 
     /****************************************
@@ -81,6 +114,14 @@ public class CurrentWeather {
         return iconId;
     }
 
+    public String getFormattedTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+        formatter.setTimeZone(TimeZone.getTimeZone(timeZone));
+
+        Date dateTime = new Date(time * 1000);
+        return formatter.format(dateTime);
+    }
+
     /************************
      * Getters and setters  *
      ************************/
@@ -133,5 +174,80 @@ public class CurrentWeather {
         this.summary = summary;
     }
 
+    public long getTime() {
+        return time;
+    }
 
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    /************************
+     * String Method for print Debuging  *
+     ************************/
+
+    @Override
+    public String toString() {
+        return "CurrentWeather{" +
+                "locationLabel='" + locationLabel + '\'' +
+                ", icon='" + icon + '\'' +
+                ", temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", precipChance=" + precipChance +
+                ", summary='" + summary + '\'' +
+                ", time=" + time +
+                ", timeZone='" + timeZone + '\'' +
+                '}';
+    }
+
+
+
+    protected CurrentWeather(Parcel in) {
+        locationLabel = in.readString();
+        icon = in.readString();
+        temperature = in.readDouble();
+        humidity = in.readDouble();
+        precipChance = in.readDouble();
+        summary = in.readString();
+        time = in.readLong();
+        timeZone = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(locationLabel);
+        dest.writeString(icon);
+        dest.writeDouble(temperature);
+        dest.writeDouble(humidity);
+        dest.writeDouble(precipChance);
+        dest.writeString(summary);
+        dest.writeLong(time);
+        dest.writeString(timeZone);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<CurrentWeather> CREATOR = new Parcelable.Creator<CurrentWeather>() {
+        @Override
+        public CurrentWeather createFromParcel(Parcel in) {
+            return new CurrentWeather(in);
+        }
+
+        @Override
+        public CurrentWeather[] newArray(int size) {
+            return new CurrentWeather[size];
+        }
+    };
 }

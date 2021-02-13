@@ -1,6 +1,9 @@
 package com.timapps.weatha;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -9,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.timapps.weatha.ui.main.MainFragment;
 
@@ -30,22 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     /*************************************
-     * Variables for Buttons and Field.  *
-     *************************************/
-
-    private TextView weatherDescText;
-    private TextView weatherTempText;
-    private ImageView weatherIcon;
-    private TextView cityLableText;
-    private TextView artCreditText;
-    private ImageView weatherDataCreditImage;
-
-
-    /*************************************
      *Init Variables  *
      *************************************/
 
-    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = "WeatherApp";//MainActivity.class.getSimpleName();
     CurrentWeather currentWeather;
 
     /**************************************
@@ -57,12 +50,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
 
 
-        if (savedInstanceState == null) {
+    /*    if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
-        }
-
+        }*/
 
 
 
@@ -74,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         String units = "imperial";
 
-        String forecastURL = "https://api.openweathermap.org/data/2.5/weather?" +
+        String forecastURL = "https://api.openweathermap.org/data/2.5/onecall?" +
                 "lat=" + latitude + "&" +
                 "lon=" + longitude + "&" +
                 "appid=" + apiKey + "&" +
@@ -106,6 +98,15 @@ public class MainActivity extends AppCompatActivity {
 
                             currentWeather = getCurrentDetail(jSonData);
 
+                            /* Run UI Thread forces the create fragment method/action to happen
+                             at UI Thread level instead of main thread level.             */
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    createFragment(currentWeather);
+                                }
+                            });
+
                         } else {
                             alertUserAboutError();
                         }
@@ -126,18 +127,14 @@ public class MainActivity extends AppCompatActivity {
     /****************************************
      * Methods and Actions that do things  *
      ****************************************/
-    public CurrentWeather getMyData() {
-        return currentWeather;
+
+    private void createFragment(CurrentWeather c){
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, MainFragment.newInstance(c))
+                .commitNow();
     }
 
-    private void findViews() {
-        weatherDescText = (TextView) findViewById(R.id.weatherDescText);
-        weatherTempText = (TextView) findViewById(R.id.weatherTempText);
-        weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
-        cityLableText = (TextView) findViewById(R.id.cityLableText);
-        artCreditText = (TextView) findViewById(R.id.artCreditText);
-        weatherDataCreditImage = (ImageView) findViewById(R.id.weatherDataCreditImage);
-    }
+
 
 
     private CurrentWeather getCurrentDetail(String jSonData) throws JSONException {
@@ -145,25 +142,19 @@ public class MainActivity extends AppCompatActivity {
         JSONObject forecast = new JSONObject(jSonData);
         String timezone = forecast.getString("timezone");
         Log.i(TAG, "From JSON: " + timezone);
-        JSONArray jWeatherArray = forecast.getJSONArray("weather");
+        JSONObject current = forecast.getJSONObject("current");
+        JSONArray jWeatherArray = current.getJSONArray("weather");
         JSONObject weather = (JSONObject) jWeatherArray.get(0);
-        JSONObject main = forecast.getJSONObject("main");
 
-        CurrentWeather currentWeather = new CurrentWeather();
-
-        String weatherDesc = weather.getString("description");
-
-        currentWeather.setHumidity(main.getDouble("humidity"));
-        currentWeather.setIcon(weather.getString("icon"));
-        currentWeather.setLocationLabel(forecast.getString("name"));
-        currentWeather.setSummary(weatherDesc);
-        currentWeather.setTemperature(main.getDouble("temp"));
-
-    /*    //weatherDescText.setText(currentWeather.getSummary());
-        weatherTempText.setText(currentWeather.getTemperature() + "");
-        Drawable drawable = getResources().getDrawable(currentWeather.getIconId());
-        weatherIcon.setImageDrawable(drawable);
-        cityLableText.setText(currentWeather.getLocationLabel());*/
+        CurrentWeather currentWeather = new CurrentWeather("city",
+                weather.getString("icon"),
+                current.getDouble("temp"),
+                current.getDouble("humidity"),
+                0.0,
+                weather.getString("main"),
+                current.getLong("dt"),
+                timezone
+        );
 
         return currentWeather;
     }
