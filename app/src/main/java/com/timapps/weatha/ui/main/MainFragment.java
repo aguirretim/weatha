@@ -139,6 +139,10 @@ public class MainFragment extends Fragment {
                         Toast.LENGTH_LONG
                 ).show();
 
+                weatherContainer.setVisibility(View.INVISIBLE);
+                cityContainer.setVisibility(View.INVISIBLE);
+                activity.createTempDetailFragment(currentWeatherFromMainActivity);
+
             }
         });
 

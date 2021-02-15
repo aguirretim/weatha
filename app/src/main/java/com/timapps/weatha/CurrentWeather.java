@@ -16,6 +16,7 @@ public class CurrentWeather implements Parcelable {
     private String locationLabel;
     private String icon;
     private double temperature;
+    private double feelsLikeTemp;
     private double humidity;
     private double precipChance;
     private String summary;
@@ -29,6 +30,7 @@ public class CurrentWeather implements Parcelable {
     public CurrentWeather(String locationLabel,
                           String icon,
                           double temperature,
+                          double feelsLikeTemp,
                           double humidity,
                           double precipChance,
                           String summary,
@@ -37,6 +39,7 @@ public class CurrentWeather implements Parcelable {
         this.locationLabel = locationLabel;
         this.icon = icon;
         this.temperature = temperature;
+        this.feelsLikeTemp = feelsLikeTemp;
         this.humidity = humidity;
         this.precipChance = precipChance;
         this.summary = summary;
@@ -188,6 +191,14 @@ public class CurrentWeather implements Parcelable {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public double getFeelsLikeTemp() {
+        return feelsLikeTemp;
+    }
+
+    public void setFeelsLikeTemp(double feelsLikeTemp) {
+        this.feelsLikeTemp = feelsLikeTemp;
     }
 
     /************************

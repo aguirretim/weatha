@@ -2,7 +2,6 @@ package com.timapps.weatha;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,15 +10,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -57,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     String country;
     String city;
     String locAddress;
-    boolean locationAvalible =false;
+    boolean locationAvalible = false;
+
     /**************************************
      * Main initialized Method.  *
      **************************************/
@@ -73,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             //When Permission Granted
-             locationAvalible = true;
+            locationAvalible = true;
             getLocation();
 
         } else {
@@ -131,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     createFragment(currentWeather);
+
                                 }
                             });
 
@@ -155,12 +152,20 @@ public class MainActivity extends AppCompatActivity {
      * Methods and Actions that do things  *
      ****************************************/
 
-    private void createFragment(CurrentWeather c){
+    private void createFragment(CurrentWeather c) {
 
         getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance(c))
-                    .commitNow();
+                .replace(R.id.container, MainFragment.newInstance(c))
+                .commitNow();
 
+
+    }
+
+    public void createTempDetailFragment(CurrentWeather c) {
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.tempDetailView, TempDetailCardFragment.newInstance(c))
+                .commitNow();
 
     }
 
@@ -204,9 +209,9 @@ public class MainActivity extends AppCompatActivity {
                             locAddress = addresss.get(0).getAddressLine(0);
 
                             Log.d("myTag", latitude + " "
-                                    + longitude+" " +
-                                    country+ " " +
-                                    city+ " " + locAddress);
+                                    + longitude + " " +
+                                    country + " " +
+                                    city + " " + locAddress);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -237,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         CurrentWeather currentWeather = new CurrentWeather(city,
                 weather.getString("icon"),
                 current.getDouble("temp"),
+                current.getDouble("feels_like"),
                 current.getDouble("humidity"),
                 0.0,
                 weather.getString("main"),
@@ -271,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onResume() {
-
 
 
         super.onResume();

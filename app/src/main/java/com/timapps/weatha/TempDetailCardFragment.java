@@ -1,0 +1,86 @@
+package com.timapps.weatha;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link TempDetailCardFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class TempDetailCardFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    CurrentWeather currentWeatherFromMainActivity;
+    private TextView weatherTempText;
+    private TextView weatherDescText;
+    private TextView cityLableText;
+    private TextView feelsLikeText;
+    private TextView humidityText;
+
+    public TempDetailCardFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment TempDetailCardFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static TempDetailCardFragment newInstance(CurrentWeather currentWeather) {
+        TempDetailCardFragment fragment = new TempDetailCardFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("currentWeatherKey", currentWeather);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            currentWeatherFromMainActivity = getArguments().getParcelable("currentWeatherKey");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_temp_detail_card, container, false);
+
+        weatherTempText = (TextView) view.findViewById(R.id.weatherTempText);
+        weatherDescText = (TextView) view.findViewById(R.id.weatherDescText);
+        cityLableText = (TextView) view.findViewById(R.id.cityLableText);
+        feelsLikeText = (TextView) view.findViewById(R.id.feelsLikeText);
+        humidityText = (TextView) view.findViewById(R.id.humidityText);
+
+        weatherTempText.setText((int) currentWeatherFromMainActivity.getTemperature() + "\u00B0");
+        weatherDescText.setText(currentWeatherFromMainActivity.getSummary());
+        cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel() + "");
+        feelsLikeText.setText("Feels like " + (int) currentWeatherFromMainActivity.getFeelsLikeTemp() + "\u00B0");
+        humidityText.setText("Humidity " + (int) currentWeatherFromMainActivity.getHumidity() + "%");
+
+        return view;
+    }
+
+
+}
+
+
