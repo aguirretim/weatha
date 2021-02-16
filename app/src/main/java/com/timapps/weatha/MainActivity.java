@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     String city;
     String locAddress;
     boolean locationAvalible = false;
+    public ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<CurrentWeather>();
+    HourlyTempRecycleAdapter HourlyTempRecycleAdapter;
+    RecyclerView RecycleListView;
 
     /**************************************
      * Main initialized Method.  *
@@ -120,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
 
                             currentWeather = getCurrentDetail(jSonData);
+                            hourlyWeatherList = getHourlyWeatherArray(jSonData);
 
                             /* Run UI Thread forces the create fragment method/action to happen
                              at UI Thread level instead of main thread level.             */
@@ -165,6 +171,14 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.tempDetailView, TempDetailCardFragment.newInstance(c))
+                .commitNow();
+
+    }
+
+    public void createHourlyWeatherFragment(CurrentWeather c) {
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.hourlyWeatherView, HourlyWeatherFragment.newInstance("", ""))
                 .commitNow();
 
     }
@@ -229,6 +243,47 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    private ArrayList<CurrentWeather> getHourlyWeatherArray(String jSonData) throws JSONException {
+
+        JSONObject forecast = new JSONObject(jSonData);
+        String timezone = forecast.getString("timezone");
+        JSONArray jWeatherArray = forecast.getJSONArray("hourly");
+        ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<>();
+
+        if (jWeatherArray.length() != 0) { //this represents the number of rows in the database
+
+
+            ArrayList<JSONObject> listdata = new ArrayList<>();
+
+            if (jWeatherArray != null) {
+                for (int i = 0; i < jWeatherArray.length(); i++) {
+                    listdata.add(jWeatherArray.getJSONObject(i));
+                }
+            }
+
+            for (JSONObject jHourlyweather : listdata
+            ) {
+                JSONArray jjWeatherArray = jHourlyweather.getJSONArray("weather");
+                JSONObject JJweather = (JSONObject) jjWeatherArray.get(0);
+                CurrentWeather jWeather = new CurrentWeather(city,
+                        JJweather.getString("icon"),
+                        jHourlyweather.getDouble("temp"),
+                        jHourlyweather.getDouble("feels_like"),
+                        jHourlyweather.getDouble("humidity"),
+                        0.0,
+                        JJweather.getString("main"),
+                        jHourlyweather.getLong("dt"),
+                        timezone
+                );
+                hourlyWeatherList.add(jWeather);
+
+            }
+        }
+
+        return hourlyWeatherList;
+    }
+
 
     private CurrentWeather getCurrentDetail(String jSonData) throws JSONException {
 

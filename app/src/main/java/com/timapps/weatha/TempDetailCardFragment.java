@@ -65,11 +65,11 @@ public class TempDetailCardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_temp_detail_card, container, false);
 
-        weatherTempText = (TextView) view.findViewById(R.id.weatherTempText);
-        weatherDescText = (TextView) view.findViewById(R.id.weatherDescText);
-        cityLableText = (TextView) view.findViewById(R.id.cityLableText);
-        feelsLikeText = (TextView) view.findViewById(R.id.feelsLikeText);
-        humidityText = (TextView) view.findViewById(R.id.humidityText);
+        weatherTempText = (TextView) view.findViewById(R.id.currentWeatherTempText);
+        weatherDescText = (TextView) view.findViewById(R.id.currentNowHeadetText);
+        cityLableText = (TextView) view.findViewById(R.id.todayHeaderText);
+        feelsLikeText = (TextView) view.findViewById(R.id.highTempText);
+        humidityText = (TextView) view.findViewById(R.id.lowTempText);
 
         weatherTempText.setText((int) currentWeatherFromMainActivity.getTemperature() + "\u00B0");
         weatherDescText.setText(currentWeatherFromMainActivity.getSummary());

@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#34000000"
-        android:text="Art by: Lilpikachoo "
+        android:text="Art by: Lilpikachoo"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/weatherTempText"
+            android:id="@+id/currentWeatherTempText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -60,10 +60,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherDescText" />
+            app:layout_constraintTop_toBottomOf="@+id/currentNowHeadetText" />
 
         <TextView
-            android:id="@+id/weatherDescText"
+            android:id="@+id/currentNowHeadetText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -88,7 +88,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/cityLableText"
+            android:id="@+id/todayHeaderText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Mooselookmeguntic "

@@ -23,6 +23,7 @@ public class CurrentWeather implements Parcelable {
     private long time;
     private String timeZone;
 
+
     /**************************************
      * Constructor for Object.  *
      **************************************/

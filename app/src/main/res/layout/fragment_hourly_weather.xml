@@ -2,46 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tempDetailMain"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#34000000"
-    tools:context=".TempDetailCardFragment">
+    android:clipChildren="false"
+    android:padding="8sp"
+    tools:context=".HourlyWeatherFragment">
 
-    <TextView
-        android:id="@+id/currentWeatherTempText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="45° "
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toStartOf="@+id/lowTempText"
-        app:layout_constraintStart_toEndOf="@+id/todayHeaderText"
-        app:layout_constraintTop_toBottomOf="@+id/currentNowHeadetText" />
-
-    <TextView
-        android:id="@+id/currentNowHeadetText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clear Sky"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/highTempText"
-        app:layout_constraintStart_toEndOf="@+id/todayHeaderText"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/todayHeaderText"
         android:layout_width="133dp"
         android:layout_height="62dp"
-        android:text="Mooselookmeguntic "
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Wednesday TODAY "
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,8 +29,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Feels like 30°"
+        android:layout_marginEnd="32dp"
+        android:text="High 60°"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
@@ -62,12 +41,20 @@
         android:id="@+id/lowTempText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="Humidity 84%"
+        android:layout_marginEnd="32dp"
+        android:text="Low 30°"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/highTempText" />
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todayHeaderText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
