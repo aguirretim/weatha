@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +32,10 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
     private String mParam2;
 
     HourlyTempRecycleAdapter HourlyTempRecycleAdapter;
+    private TextView todayHeaderText;
+    private TextView highTempText;
+    private TextView lowTempText;
+
     RecyclerView recycleListView;
     public ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<CurrentWeather>();
 
@@ -61,6 +68,9 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
     }
 
     @Override
@@ -71,6 +81,13 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
         View view = inflater.inflate(R.layout.fragment_hourly_weather, container, false);
 
         MainActivity activity = (MainActivity) getActivity();
+        todayHeaderText = (TextView) view.findViewById(R.id.todayHeaderText);
+        highTempText = (TextView) view.findViewById(R.id.highTempText);
+        lowTempText = (TextView) view.findViewById(R.id.lowTempText);
+        todayHeaderText.setText(activity.currentWeather.ePochTimeConverter(
+                activity.currentWeather.getTime()).getInstance().
+                getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) +"TODAY");
+
         recycleListView = view.findViewById(R.id.recycleListView);
 
         if (activity.hourlyWeatherList != null) {

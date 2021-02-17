@@ -72,7 +72,7 @@ public class TempDetailCardFragment extends Fragment {
         humidityText = (TextView) view.findViewById(R.id.lowTempText);
 
         weatherTempText.setText((int) currentWeatherFromMainActivity.getTemperature() + "\u00B0");
-        weatherDescText.setText(currentWeatherFromMainActivity.getSummary());
+        weatherDescText.setText(currentWeatherFromMainActivity.getSummaryB());
         cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel() + "");
         feelsLikeText.setText("Feels like " + (int) currentWeatherFromMainActivity.getFeelsLikeTemp() + "\u00B0");
         humidityText.setText("Humidity " + (int) currentWeatherFromMainActivity.getHumidity() + "%");

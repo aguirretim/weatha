@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                         jHourlyweather.getDouble("humidity"),
                         0.0,
                         JJweather.getString("main"),
+                        JJweather.getString("description"),
                         jHourlyweather.getLong("dt"),
                         timezone
                 );
@@ -301,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                 current.getDouble("humidity"),
                 0.0,
                 weather.getString("main"),
+                weather.getString("description"),
                 current.getLong("dt"),
                 timezone
         );

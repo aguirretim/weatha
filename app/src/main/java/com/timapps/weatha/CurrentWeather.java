@@ -21,6 +21,7 @@ public class CurrentWeather implements Parcelable {
     private double humidity;
     private double precipChance;
     private String summary;
+    private String summaryB;
     private long time;
     private String timeZone;
 
@@ -36,6 +37,7 @@ public class CurrentWeather implements Parcelable {
                           double humidity,
                           double precipChance,
                           String summary,
+                          String summaryB,
                           long time,
                           String timeZone) {
         this.locationLabel = locationLabel;
@@ -45,9 +47,10 @@ public class CurrentWeather implements Parcelable {
         this.humidity = humidity;
         this.precipChance = precipChance;
         this.summary = summary;
+        this.summaryB = toTitleCase(summaryB);
         this.time = time;
         this.timeZone = timeZone;
-        ePochTimeConverter(time);
+
 
     }
 
@@ -179,6 +182,14 @@ public class CurrentWeather implements Parcelable {
         this.summary = summary;
     }
 
+    public String getSummaryB() {
+        return summaryB;
+    }
+
+    public void setSummaryB(String summaryB) {
+        this.summaryB = summaryB;
+    }
+
     public long getTime() {
         return time;
     }
@@ -303,6 +314,33 @@ public class CurrentWeather implements Parcelable {
 
         }
         return Time;
+    }
+
+    private static String toTitleCase(String str) {
+
+        if(str == null || str.isEmpty())
+            return "";
+
+        if(str.length() == 1)
+            return str.toUpperCase();
+
+        //split the string by space
+        String[] parts = str.split(" ");
+
+        StringBuilder sb = new StringBuilder( str.length() );
+
+        for(String part : parts){
+
+            if(part.length() > 1 )
+                sb.append( part.substring(0, 1).toUpperCase() )
+                        .append( part.substring(1).toLowerCase() );
+            else
+                sb.append(part.toUpperCase());
+
+            sb.append(" ");
+        }
+
+        return sb.toString().trim();
     }
 
     /************************

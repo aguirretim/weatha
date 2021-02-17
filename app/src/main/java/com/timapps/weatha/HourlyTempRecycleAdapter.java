@@ -61,7 +61,7 @@ public class HourlyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.
                         .get(vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime()).AM_PM))
                 +
                 "");
-        ViewHolder.currentWeatherTempText.setText((int) vCurrentWeather.getTemperature() + "");
+        ViewHolder.currentWeatherTempText.setText((int) vCurrentWeather.getTemperature() + "\u00B0");
         ViewHolder.weatherIcon.setImageResource((vCurrentWeather.
                 getIconId(vCurrentWeather.getIcon())));
     }
