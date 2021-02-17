@@ -79,7 +79,7 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
             recycleListView.setAdapter(HourlyTempRecycleAdapter);
 
         } else {
-            Toast.makeText(getActivity(), "No terms in the databse", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No data in the database", Toast.LENGTH_SHORT).show();
         }
 
         recycleListView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false));

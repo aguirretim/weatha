@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -46,9 +47,9 @@ public class CurrentWeather implements Parcelable {
         this.summary = summary;
         this.time = time;
         this.timeZone = timeZone;
+        ePochTimeConverter(time);
+
     }
-
-
 
 
     /****************************************
@@ -220,7 +221,93 @@ public class CurrentWeather implements Parcelable {
                 '}';
     }
 
+    public Calendar ePochTimeConverter(long pTime) {
+        //You could start with a string representation of epoch
+        long epoch = pTime;
+        //System.out.println("Convert Epoch " + epoch + " to date: ");
+        Date d = new Date(epoch * 1000); //convert epoch seconds to microseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        //Here you say to java the initial timezone. This is the secret
+        // sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
 
+        cal.get(cal.HOUR_OF_DAY);
+        //cal.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()); // Thu
+
+
+        System.out.println(cal.get(cal.AM_PM) + "");
+
+
+        return cal;
+    }
+
+    public String amPmFinder(int amPmFieldNumber) {
+
+        String amPm;
+
+        switch (amPmFieldNumber) {
+            case 0:
+                amPm = "AM";
+                break;
+            case 1:
+                amPm = "PM";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + amPmFieldNumber);
+        }
+        return amPm;
+
+    }
+
+    public int midNoonConverter(int pTime) {
+        int Time = pTime;
+
+        switch (pTime) {
+            case 0:
+                Time = 12;
+                break;
+            case 13:
+                Time = 1;
+                break;
+            case 14:
+                Time = 2;
+                break;
+            case 15:
+                Time = 3;
+                break;
+            case 16:
+                Time = 4;
+                break;
+            case 17:
+                Time = 5;
+                break;
+            case 18:
+                Time = 6;
+                break;
+            case 19:
+                Time = 7;
+                break;
+            case 20:
+                Time = 8;
+                break;
+            case 21:
+                Time = 9;
+                break;
+            case 22:
+                Time = 10;
+                break;
+            case 23:
+                Time = 11;
+                break;
+
+        }
+        return Time;
+    }
+
+    /************************
+     * Makes object Parcelable methods so it can be passed in bundle*
+     ************************/
 
     protected CurrentWeather(Parcel in) {
         locationLabel = in.readString();
