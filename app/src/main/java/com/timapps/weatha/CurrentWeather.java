@@ -24,6 +24,9 @@ public class CurrentWeather implements Parcelable {
     private String summaryB;
     private long time;
     private String timeZone;
+    private double minTemp;
+    private double maxTemp;
+
 
 
     /**************************************
@@ -214,6 +217,25 @@ public class CurrentWeather implements Parcelable {
         this.feelsLikeTemp = feelsLikeTemp;
     }
 
+    public double getMinTemp() {
+        return minTemp;
+    }
+
+    public void setMinTemp(double minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    public double getMaxTemp() {
+        return maxTemp;
+    }
+
+    public void setMaxTemp(double maxTemp) {
+        this.maxTemp = maxTemp;
+    }
+
+
+
+
     /************************
      * String Method for print Debuging  *
      ************************/
@@ -243,11 +265,11 @@ public class CurrentWeather implements Parcelable {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
 
-        cal.get(cal.HOUR_OF_DAY);
+
         //cal.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()); // Thu
 
 
-        System.out.println(cal.get(cal.AM_PM) + "");
+
 
 
         return cal;

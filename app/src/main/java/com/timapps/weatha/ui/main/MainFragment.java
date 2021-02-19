@@ -139,7 +139,7 @@ public class MainFragment extends Fragment {
                 cityContainer.setVisibility(View.INVISIBLE);
                 activity.createTempDetailFragment(currentWeatherFromMainActivity);
                 activity.createHourlyWeatherFragment(currentWeatherFromMainActivity);
-
+                activity.createDailyWeatherFragment();
             }
         });
 

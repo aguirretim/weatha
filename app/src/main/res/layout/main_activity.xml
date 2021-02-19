@@ -18,7 +18,9 @@
         android:id="@+id/tempDetailView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/hourlyWeatherView"
@@ -26,9 +28,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/tempDetailView">
-
-
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/dailyWeatherView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hourlyWeatherView"></FrameLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

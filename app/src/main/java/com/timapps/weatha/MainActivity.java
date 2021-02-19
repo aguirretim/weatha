@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     String locAddress;
     boolean locationAvalible = false;
     public ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<CurrentWeather>();
+    public ArrayList<CurrentWeather> dailyWeatherList = new ArrayList<CurrentWeather>();
     HourlyTempRecycleAdapter HourlyTempRecycleAdapter;
     RecyclerView RecycleListView;
 
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
                             currentWeather = getCurrentDetail(jSonData);
                             hourlyWeatherList = getHourlyWeatherArray(jSonData);
+                            dailyWeatherList = getDailyWeatherList(jSonData);
 
                             /* Run UI Thread forces the create fragment method/action to happen
                              at UI Thread level instead of main thread level.             */
@@ -179,6 +182,14 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.hourlyWeatherView, HourlyWeatherFragment.newInstance("", ""))
+                .commitNow();
+
+    }
+
+    public void createDailyWeatherFragment() {
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.dailyWeatherView, DailyWeather.newInstance("", ""))
                 .commitNow();
 
     }
@@ -308,6 +319,52 @@ public class MainActivity extends AppCompatActivity {
         );
 
         return currentWeather;
+    }
+
+    private ArrayList<CurrentWeather> getDailyWeatherList(String jSonData) throws JSONException {
+
+        JSONObject forecast = new JSONObject(jSonData);
+        String timezone = forecast.getString("timezone");
+
+        JSONArray jDailyWeatherArray = forecast.getJSONArray("daily");
+        ArrayList<JSONObject> listdata = new ArrayList<>();
+
+        if (jDailyWeatherArray != null) {
+            for (int i = 0; i < jDailyWeatherArray.length(); i++) {
+                listdata.add(jDailyWeatherArray.getJSONObject(i));
+            }
+        }
+
+
+        for (JSONObject jDailyweather : listdata
+        ) {
+            JSONObject tempJobj = jDailyweather.getJSONObject("temp");
+            JSONArray jjWeatherArray = jDailyweather.getJSONArray("weather");
+            JSONObject JJweather = (JSONObject) jjWeatherArray.get(0);
+            CurrentWeather jWeather = new CurrentWeather(city,
+                    JJweather.getString("icon"),
+                    0.0,
+                    0.0,
+                    jDailyweather.getDouble("humidity"),
+                    0.0,
+                    JJweather.getString("main"),
+                    JJweather.getString("description"),
+                    jDailyweather.getLong("dt"),
+                    timezone
+            );
+            Log.i(TAG, jWeather.ePochTimeConverter(
+                    jWeather.getTime()).getInstance().
+                    getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
+            jWeather.setMinTemp(tempJobj.getDouble("min"));
+            jWeather.setMaxTemp(tempJobj.getDouble("max"));
+            /*Double rainNumber = jDailyweather.getDouble("rain");
+            if (rainNumber == null ) {
+                jWeather.setPrecipChance(rainNumber);
+            }*/
+            dailyWeatherList.add(jWeather);
+        }
+
+        return dailyWeatherList;
     }
 
     private boolean isNetworkAvailable() {
