@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -29,6 +31,7 @@ public class TempDetailCardFragment extends Fragment {
     private TextView cityLableText;
     private TextView feelsLikeText;
     private TextView humidityText;
+    private ConstraintLayout tempDetailMain;
 
     public TempDetailCardFragment() {
         // Required empty public constructor
@@ -37,9 +40,6 @@ public class TempDetailCardFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment TempDetailCardFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -70,12 +70,23 @@ public class TempDetailCardFragment extends Fragment {
         cityLableText = (TextView) view.findViewById(R.id.todayHeaderText);
         feelsLikeText = (TextView) view.findViewById(R.id.highTempText);
         humidityText = (TextView) view.findViewById(R.id.lowTempText);
+        tempDetailMain = (ConstraintLayout) view.findViewById(R.id.tempDetailMain);
 
         weatherTempText.setText((int) currentWeatherFromMainActivity.getTemperature() + "\u00B0");
         weatherDescText.setText(currentWeatherFromMainActivity.getSummaryB());
         cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel() + "");
         feelsLikeText.setText("Feels like " + (int) currentWeatherFromMainActivity.getFeelsLikeTemp() + "\u00B0");
         humidityText.setText("Humidity " + (int) currentWeatherFromMainActivity.getHumidity() + "%");
+
+        tempDetailMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                container.removeView(view);
+
+            }
+        });
+
 
         return view;
     }
