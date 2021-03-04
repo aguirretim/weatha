@@ -44,7 +44,7 @@
         android:layout_marginEnd="32dp"
         android:text="Low 30°"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/darker_gray"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/highTempText" />

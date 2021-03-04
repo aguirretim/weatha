@@ -4,17 +4,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
-public class DailyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LocationListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
 
     /**************************************
      * initialized Variables for Object.  *
@@ -24,13 +23,13 @@ public class DailyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.V
     private Context vContext;
     private LayoutInflater vInflator;
     private CurrentWeather vCurrentWeather;
-    private DailyTempRecycleAdapter.RecyclerClickListener recyclerClickListener;
+    private LocationListAdapter.RecyclerClickListener recyclerClickListener;
 
     /****************************
      * Constructor for Object.  *
      ****************************/
 
-    public DailyTempRecycleAdapter(List<CurrentWeather> vlist, Context vContext) {
+    public LocationListAdapter(List<CurrentWeather> vlist, Context vContext) {
         this.vlist = vlist;
         this.vContext = vContext;
         vInflator = LayoutInflater.from(vContext);
@@ -45,25 +44,23 @@ public class DailyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View v = vInflator.inflate(R.layout.daily_weather_list_item, parent, false);
-        return new DailyTempRecycleAdapter.ViewHolder(v);
+        View v = vInflator.inflate(R.layout.location_list_item, parent, false);
+        return new LocationListAdapter.ViewHolder(v);
     }
 
     // Responsible to give values to each vie in a layout
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        DailyTempRecycleAdapter.ViewHolder ViewHolder = (DailyTempRecycleAdapter.ViewHolder) holder;
+        LocationListAdapter.ViewHolder ViewHolder = (LocationListAdapter.ViewHolder) holder;
         vCurrentWeather = vlist.get(position);
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("h:mm a");
 
+        ViewHolder.currentTimeText.setText(localDateFormat.format(vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime()).getTime())+""
+        );
+        ViewHolder.tempText.setText((int) vCurrentWeather.getTemperature() + "\u00B0");
+        ViewHolder.cityNameLable.setText( vCurrentWeather.getLocationLabel());
 
-        ViewHolder.dayText.setText(vCurrentWeather.ePochTimeConverter(
-                vCurrentWeather.getTime()).
-                getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
-        ViewHolder.highTemppText.setText((int) vCurrentWeather.getMaxTemp() + "\u00B0");
-        ViewHolder.lowTemppText.setText((int) vCurrentWeather.getMinTemp() + "\u00B0");
-        ViewHolder.dayWeatherIcon.setImageResource((vCurrentWeather.
-                getIconId(vCurrentWeather.getIcon())));
     }
 
     // responsible for how many elements are in the recycle view
@@ -78,17 +75,17 @@ public class DailyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView dayText;
-        private TextView highTemppText;
-        private TextView lowTemppText;
-        private ImageView dayWeatherIcon;
+        private TextView tempText;
+        private TextView currentTimeText;
+        private TextView cityNameLable;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            dayText = (TextView) itemView.findViewById(R.id.dayText);
-            highTemppText = (TextView) itemView.findViewById(R.id.highTemppText);
-            lowTemppText = (TextView) itemView.findViewById(R.id.lowTemppText);
-            dayWeatherIcon = (ImageView) itemView.findViewById(R.id.dayWeatherIcon);
+
+
+            tempText = (TextView) itemView.findViewById(R.id.tempText);
+            currentTimeText = (TextView) itemView.findViewById(R.id.updateTimeText);
+            cityNameLable = (TextView) itemView.findViewById(R.id.cityNameLable);
             itemView.setOnClickListener(this);
         }
 
@@ -101,8 +98,8 @@ public class DailyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public void setRecyclerClickListener(DailyTempRecycleAdapter.RecyclerClickListener recyclerClickListener) {
-        this.recyclerClickListener = (RecyclerClickListener) recyclerClickListener;
+    public void setRecyclerClickListener(LocationListAdapter.RecyclerClickListener recyclerClickListener) {
+        this.recyclerClickListener = (LocationListAdapter.RecyclerClickListener) recyclerClickListener;
     }
 
     public interface RecyclerClickListener {
@@ -112,3 +109,4 @@ public class DailyTempRecycleAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
 }
+

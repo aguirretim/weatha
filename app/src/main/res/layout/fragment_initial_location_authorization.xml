@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#5F6DBA"
+    tools:context=".InitialLocationAuthorization">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/welcomeHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="Welcome to Weatha"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Welcome to Weatha" />
+
+    <TextView
+        android:id="@+id/locationInfoText"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="In order to help you get the most accurate and helpful weather forecast we will need access to your location "
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:text="In order to help you get the most accurate and helpful weather forecast we will need access to your location " />
+
+    <TextView
+        android:id="@+id/PrivacyPolicyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="By using this app you agree to my Privacy Policy "
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="By using this app you agree to my Privacy Policy " />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/placeholderimg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeHeaderText" />
+
+    <Button
+        android:id="@+id/enableLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        android:text="Yes, Enable Location Access "
+        android:textStyle="bold"
+        app:backgroundTint="#4CAF50"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationInfoText" />
+
+    <Button
+        android:id="@+id/disableLocationButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Don’t Use My Location "
+        android:textColor="#808080"
+        android:textStyle="bold"
+
+        app:backgroundTint="#5F6DBA"
+        app:layout_constraintEnd_toEndOf="@+id/enableLocationButton"
+        app:layout_constraintStart_toStartOf="@+id/enableLocationButton"
+        app:layout_constraintTop_toBottomOf="@+id/enableLocationButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

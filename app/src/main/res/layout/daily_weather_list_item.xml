@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="45° "
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/darker_gray"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

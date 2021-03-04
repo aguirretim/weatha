@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     String city;
     String locAddress;
     boolean locationAvalible = false;
+    public ArrayList<CurrentWeather> currentWeatherList = new ArrayList<CurrentWeather>();
     public ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<CurrentWeather>();
     public ArrayList<CurrentWeather> dailyWeatherList = new ArrayList<CurrentWeather>();
     HourlyTempRecycleAdapter HourlyTempRecycleAdapter;
@@ -130,12 +131,19 @@ public class MainActivity extends AppCompatActivity {
                             hourlyWeatherList = getHourlyWeatherArray(jSonData);
                             dailyWeatherList = getDailyWeatherList(jSonData);
 
+                            if (currentWeatherList.isEmpty()){
+                                currentWeatherList.add(currentWeather);
+                            } else if (currentWeatherList.size()>= 1){
+                                currentWeatherList.set(0,currentWeather);
+                            }
+
                             /* Run UI Thread forces the create fragment method/action to happen
                              at UI Thread level instead of main thread level.             */
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     createFragment(currentWeather);
+
 
                                 }
                             });
@@ -170,6 +178,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void createLocationSettingsFragment( ) {
+    getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, settingsAndLocationListPage.newInstance("",""))
+            .commitNow();
+    }
+
     public void createTempDetailFragment(CurrentWeather c) {
 
         getSupportFragmentManager().beginTransaction()
@@ -191,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.dailyWeatherView, DailyWeather.newInstance("", ""))
                 .commitNow();
+
 
     }
 

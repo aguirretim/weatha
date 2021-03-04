@@ -64,7 +64,7 @@ public class TempDetailCardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_temp_detail_card, container, false);
-
+        MainActivity activity = (MainActivity) getActivity();
         weatherTempText = (TextView) view.findViewById(R.id.currentWeatherTempText);
         weatherDescText = (TextView) view.findViewById(R.id.currentNowHeadetText);
         cityLableText = (TextView) view.findViewById(R.id.todayHeaderText);
@@ -83,7 +83,8 @@ public class TempDetailCardFragment extends Fragment {
             public void onClick(View view) {
 
                 container.removeView(view);
-
+                activity.getSupportFragmentManager().beginTransaction()
+                        .remove(DailyWeather.newInstance("", "")).commit();
             }
         });
 

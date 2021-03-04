@@ -143,6 +143,14 @@ public class MainFragment extends Fragment {
             }
         });
 
+        cityContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                activity.createLocationSettingsFragment();
+            }
+        });
+
 
         return view;
 
