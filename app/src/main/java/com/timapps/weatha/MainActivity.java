@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     FusedLocationProviderClient fusedLocationProviderClient;
     double latitude = 47.606209;
     double longitude = -122.332069;
+    boolean isMetric = false;
+    String units = "imperial";
     String country;
     String city;
     String locAddress;
@@ -88,14 +90,15 @@ public class MainActivity extends AppCompatActivity {
             longitude = -122.332069;
         }
 
+        if (isMetric==true){
+            units = "metric";
+        }
 
 
         String apiKey = "Fill Api Key Here";
 
         double latitude = 47.606209;
         double longitude = -122.332069;
-
-        String units = "imperial";
 
         String forecastURL = "https://api.openweathermap.org/data/2.5/onecall?" +
                 "lat=" + latitude + "&" +

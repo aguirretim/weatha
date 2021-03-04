@@ -1,5 +1,6 @@
 package com.timapps.weatha;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +23,10 @@ import android.widget.Toast;
 public class settingsAndLocationListPage extends Fragment implements LocationListAdapter.RecyclerClickListener {
 
     private RecyclerView locationRecycleListView;
+    private TextView fahrenheitSettings;
+    private TextView splitLable;
+    private TextView celsiusSettings;
+    private FloatingActionButton addLocationButton;
     LocationListAdapter LocationListAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,7 +75,68 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
         View view = inflater.inflate(R.layout.fragment_settings_and_location_list_page, container, false);
 
         locationRecycleListView = (RecyclerView) view.findViewById(R.id.locationRecycleListView);
+        fahrenheitSettings = (TextView) view.findViewById(R.id.fahrenheitSettings);
+        splitLable = (TextView) view.findViewById(R.id.splitLable);
+        celsiusSettings = (TextView) view.findViewById(R.id.celsiusSettings);
+        addLocationButton = (FloatingActionButton) view.findViewById(R.id.addLocationButton);
+
+
         MainActivity activity = (MainActivity) getActivity();
+
+        if (activity.isMetric == true) {
+            celsiusSettings.setTextColor(Color.parseColor("#FFFFFF"));
+            fahrenheitSettings.setTextColor(Color.parseColor("#AAAAAA"));
+        }
+
+        fahrenheitSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (activity.isMetric == false) {
+                    activity.isMetric = true;
+                    celsiusSettings.setTextColor(Color.parseColor("#FFFFFF"));
+                    fahrenheitSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                } else if (activity.isMetric == true) {
+                    activity.isMetric = false;
+                    celsiusSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                    fahrenheitSettings.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+            }
+        });
+
+        celsiusSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (activity.isMetric == false) {
+                    activity.isMetric = true;
+                    celsiusSettings.setTextColor(Color.parseColor("#FFFFFF"));
+                    fahrenheitSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                } else if (activity.isMetric == true) {
+                    activity.isMetric = false;
+                    celsiusSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                    fahrenheitSettings.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+            }
+        });
+
+        splitLable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (activity.isMetric == false) {
+                    activity.isMetric = true;
+                    celsiusSettings.setTextColor(Color.parseColor("#FFFFFF"));
+                    fahrenheitSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                } else if (activity.isMetric == true) {
+                    activity.isMetric = false;
+                    celsiusSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                    fahrenheitSettings.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+            }
+        });
+
+
 
         if (activity.dailyWeatherList != null) {
             LocationListAdapter = new LocationListAdapter(activity.currentWeatherList, getActivity().getApplicationContext());
@@ -88,3 +157,5 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
 
     }
 }
+
+

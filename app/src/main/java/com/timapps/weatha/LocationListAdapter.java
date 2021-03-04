@@ -58,6 +58,8 @@ public class LocationListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         ViewHolder.currentTimeText.setText(localDateFormat.format(vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime()).getTime())+""
         );
+
+
         ViewHolder.tempText.setText((int) vCurrentWeather.getTemperature() + "\u00B0");
         ViewHolder.cityNameLable.setText( vCurrentWeather.getLocationLabel());
 
