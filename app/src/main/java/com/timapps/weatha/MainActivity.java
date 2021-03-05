@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        String apiKey = "Api Key Goes HEre";
+        String apiKey = "Api Key Goes Here";
 
         double latitude = 47.606209;
         double longitude = -122.332069;
