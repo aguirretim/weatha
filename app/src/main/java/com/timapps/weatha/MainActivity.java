@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        String apiKey = "Fill Api Key Here";
+        String apiKey = "f6636264476fc34fd588cdfd90de73cf";
 
         double latitude = 47.606209;
         double longitude = -122.332069;
@@ -177,7 +177,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, MainFragment.newInstance(c))
                 .commitNow();
+    }
 
+    public void createAddLocationFragment( ) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, addLocationPage.newInstance("",""))
+                .commitNow();
 
     }
 

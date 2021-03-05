@@ -136,6 +136,13 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
             }
         });
 
+        addLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.createAddLocationFragment();
+            }
+        });
+
 
 
         if (activity.dailyWeatherList != null) {
