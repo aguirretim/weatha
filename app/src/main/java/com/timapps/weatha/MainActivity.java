@@ -215,6 +215,16 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.dailyWeatherView, DailyWeather.newInstance("", ""))
                 .commitNow();
 
+    }
+
+    public void backToMainFragment() {
+
+
+
+        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.tempDetailView)).commit();
+        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.hourlyWeatherView)).commit();
+        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.dailyWeatherView)).commit();
+        createFragment(currentWeather);
 
     }
 

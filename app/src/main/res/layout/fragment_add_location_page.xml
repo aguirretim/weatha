@@ -32,8 +32,10 @@
         android:baselineAlignBottom="false"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:borderWidth="0.0dp"
+        app:backgroundTint="#FFFFFF"
+        app:borderWidth="1dp"
         app:fabSize="mini"
+        app:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/searchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/searchView" />

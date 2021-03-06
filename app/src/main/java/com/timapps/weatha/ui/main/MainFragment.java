@@ -86,6 +86,7 @@ public class MainFragment extends Fragment {
 
         MainActivity activity = (MainActivity) getActivity();
 
+
         weatherDescText = (TextView) view.findViewById(R.id.currentNowHeadetText);
         weatherTempText = (TextView) view.findViewById(R.id.currentWeatherTempText);
         weatherIcon = (ImageView) view.findViewById(R.id.weatherIcon);
@@ -100,6 +101,11 @@ public class MainFragment extends Fragment {
         cityLableText.setText(currentWeatherFromMainActivity.getLocationLabel() + "");
         weatherIcon.setImageResource((currentWeatherFromMainActivity.
                 getIconId(currentWeatherFromMainActivity.getIcon())));
+
+
+
+
+
 
 
         /****************************************
@@ -140,6 +146,7 @@ public class MainFragment extends Fragment {
                 activity.createTempDetailFragment(currentWeatherFromMainActivity);
                 activity.createHourlyWeatherFragment(currentWeatherFromMainActivity);
                 activity.createDailyWeatherFragment();
+
             }
         });
 

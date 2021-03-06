@@ -81,10 +81,8 @@ public class TempDetailCardFragment extends Fragment {
         tempDetailMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                activity.backToMainFragment();
 
-                container.removeView(view);
-                activity.getSupportFragmentManager().beginTransaction()
-                        .remove(DailyWeather.newInstance("", "")).commit();
             }
         });
 
