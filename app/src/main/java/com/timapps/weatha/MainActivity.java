@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     double latitude = 47.606209;
     double longitude = -122.332069;
     boolean isMetric = false;
+    boolean isDetailView = false;
     String units = "imperial";
     String country;
     String city;
@@ -173,10 +176,12 @@ public class MainActivity extends AppCompatActivity {
      ****************************************/
 
     private void createFragment(CurrentWeather c) {
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance(c))
-                .commitNow();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        MainFragment MainFrag= MainFragment.newInstance(c);
+        fragmentTransaction.replace(R.id.container, MainFragment.newInstance(c));
+        fragmentTransaction.addToBackStack("Main");
+        fragmentTransaction.commit();
     }
 
     public void createAddLocationFragment( ) {
@@ -188,9 +193,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void createLocationSettingsFragment( ) {
-    getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, settingsAndLocationListPage.newInstance("",""))
-            .commitNow();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        settingsAndLocationListPage SettingsFrag= settingsAndLocationListPage.newInstance("","");
+        fragmentTransaction.replace(R.id.container, SettingsFrag);
+        fragmentTransaction.addToBackStack("Settings");
+        fragmentTransaction.commit();
+
     }
 
     public void createTempDetailFragment(CurrentWeather c) {
@@ -198,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.tempDetailView, TempDetailCardFragment.newInstance(c))
                 .commitNow();
+
+        isDetailView=true;
+
 
     }
 
@@ -218,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void backToMainFragment() {
-
-
 
         getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.tempDetailView)).commit();
         getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.hourlyWeatherView)).commit();
@@ -425,10 +435,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onResume() {
-
-
         super.onResume();
+    }
 
+    @Override
+    public void onBackPressed() {
+        // code here to show dialog
+
+        if (isDetailView=true)
+        {backToMainFragment();}
+
+
+
+
+        //super.onBackPressed();  // optional depending on your needs
 
     }
 

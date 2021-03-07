@@ -156,7 +156,13 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
 
         locationRecycleListView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.VERTICAL, false));
 
+
+
         return view;
+
+
+
+
     }
 
     @Override

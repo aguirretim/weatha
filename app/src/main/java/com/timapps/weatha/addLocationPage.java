@@ -75,6 +75,15 @@ public class addLocationPage extends Fragment {
         cancelButton = (FloatingActionButton) view.findViewById(R.id.cancelButton);
         searchView.onActionViewExpanded();
 
+        MainActivity activity = (MainActivity) getActivity();
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.createLocationSettingsFragment();
+            }
+        });
+
         return view;
     }
 }

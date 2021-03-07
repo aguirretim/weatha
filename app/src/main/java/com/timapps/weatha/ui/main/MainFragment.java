@@ -159,6 +159,10 @@ public class MainFragment extends Fragment {
         });
 
 
+
+
+
+
         return view;
 
 
@@ -175,7 +179,12 @@ public class MainFragment extends Fragment {
         }
 
 
+
+
+
     }
+
+
 
     public void onResume() {
 
@@ -184,5 +193,7 @@ public class MainFragment extends Fragment {
 
 
     }
+
+
 
 }
