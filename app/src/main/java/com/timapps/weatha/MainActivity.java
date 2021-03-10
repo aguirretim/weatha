@@ -44,7 +44,6 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-
     /*************************************
      *Init Variables  *
      *************************************/
@@ -56,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     double longitude = -122.332069;
     boolean isMetric = false;
     boolean isDetailView = false;
+    boolean isSettingView = false;
+    boolean isLocationView = false;
     String units = "imperial";
     String country;
     String city;
@@ -66,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<CurrentWeather> dailyWeatherList = new ArrayList<CurrentWeather>();
     HourlyTempRecycleAdapter HourlyTempRecycleAdapter;
     RecyclerView RecycleListView;
+    String apiKey = "Api Key goes Here";
+
+    String forecastURL = "https://api.openweathermap.org/data/2.5/onecall?" +
+            "lat=" + latitude + "&" +
+            "lon=" + longitude + "&" +
+            "appid=" + apiKey + "&" +
+            "units=" + units;
 
     /**************************************
      * Main initialized Method.  *
@@ -95,19 +103,18 @@ public class MainActivity extends AppCompatActivity {
 
         if (isMetric==true){
             units = "metric";
+
         }
 
+        getWeatherData( );
 
-        String apiKey = "Api Key Goes Here";
+    }
 
-        double latitude = 47.606209;
-        double longitude = -122.332069;
+    /****************************************
+     * Methods and Actions that do things  *
+     ****************************************/
 
-        String forecastURL = "https://api.openweathermap.org/data/2.5/onecall?" +
-                "lat=" + latitude + "&" +
-                "lon=" + longitude + "&" +
-                "appid=" + apiKey + "&" +
-                "units=" + units;
+    public void getWeatherData( ) {
 
         if (isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
@@ -150,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     createFragment(currentWeather);
 
-
                                 }
                             });
 
@@ -168,12 +174,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
     }
 
-    /****************************************
-     * Methods and Actions that do things  *
-     ****************************************/
 
     private void createFragment(CurrentWeather c) {
         FragmentManager manager = getSupportFragmentManager();
@@ -189,16 +191,28 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.container, addLocationPage.newInstance("",""))
                 .commitNow();
 
+        isLocationView=true;
+
     }
 
 
     public void createLocationSettingsFragment( ) {
+
+
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         settingsAndLocationListPage SettingsFrag= settingsAndLocationListPage.newInstance("","");
         fragmentTransaction.replace(R.id.container, SettingsFrag);
         fragmentTransaction.addToBackStack("Settings");
         fragmentTransaction.commit();
+
+
+        if (isLocationView==true){
+            isLocationView=false;
+        }
+
+        isSettingView=true;
 
     }
 
@@ -230,10 +244,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void backToMainFragment() {
-
+        if (isDetailView==true){
         getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.tempDetailView)).commit();
         getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.hourlyWeatherView)).commit();
         getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.dailyWeatherView)).commit();
+        isDetailView=false;
+        }
+
+        if (isSettingView==true){
+            isSettingView=false;
+        }
+
         createFragment(currentWeather);
 
     }
@@ -442,8 +463,16 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         // code here to show dialog
 
-        if (isDetailView=true)
+        if (isDetailView==true)
         {backToMainFragment();}
+
+        if(isSettingView==true){
+            backToMainFragment();
+        }
+
+        if(isLocationView==true){
+            createLocationSettingsFragment( );
+        }
 
 
 

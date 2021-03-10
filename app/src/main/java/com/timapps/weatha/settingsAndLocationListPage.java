@@ -128,6 +128,7 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
                     activity.isMetric = true;
                     celsiusSettings.setTextColor(Color.parseColor("#FFFFFF"));
                     fahrenheitSettings.setTextColor(Color.parseColor("#AAAAAA"));
+                    activity.getWeatherData( );
                 } else if (activity.isMetric == true) {
                     activity.isMetric = false;
                     celsiusSettings.setTextColor(Color.parseColor("#AAAAAA"));
@@ -167,7 +168,8 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
 
     @Override
     public void onClickPerformed(int postion) {
-
+        MainActivity activity = (MainActivity) getActivity();
+        activity.backToMainFragment();
     }
 }
 

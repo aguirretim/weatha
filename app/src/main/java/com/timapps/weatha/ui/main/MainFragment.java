@@ -105,9 +105,6 @@ public class MainFragment extends Fragment {
 
 
 
-
-
-
         /****************************************
          * On Click Buttons  *
          ****************************************/
