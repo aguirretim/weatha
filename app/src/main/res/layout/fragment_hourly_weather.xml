@@ -12,11 +12,11 @@
 
     <TextView
         android:id="@+id/todayHeaderText"
-        android:layout_width="133dp"
+        android:layout_width="170dp"
         android:layout_height="62dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Wednesday TODAY "
+        android:text="Wednesday September 31 "
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
