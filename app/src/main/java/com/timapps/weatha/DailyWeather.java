@@ -8,7 +8,9 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import java.util.ArrayList;
 
@@ -94,6 +96,10 @@ public class DailyWeather extends Fragment implements DailyTempRecycleAdapter.Re
             Toast.makeText(getActivity(), "No data in the database", Toast.LENGTH_SHORT).show();
         }
         dailyRecycleListView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.VERTICAL, false));
+        //Snap helper makes the items snap  in the view instead of having in betweens
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(dailyRecycleListView);
+
         return view;
     }
 

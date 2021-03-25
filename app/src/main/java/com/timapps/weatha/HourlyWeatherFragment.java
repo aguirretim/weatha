@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +90,9 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
                 LinearLayoutManager.HORIZONTAL, false);
         recycleListView.setLayoutManager(llManager);
 
+        //Snap helper makes the items snap  in the view instead of having in betweens
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recycleListView);
 
         recycleListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
