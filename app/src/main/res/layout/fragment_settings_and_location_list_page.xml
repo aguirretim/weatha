@@ -18,17 +18,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+    android:id="@+id/boxTempType"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:orientation="horizontal"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/locationRecycleListView">
+
     <TextView
-        android:id="@+id/fahrenheitSettings"
+        android:id="@+id/celsiusSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="°F"
-        android:textColor="#ffffff"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:text="°C"
+        android:textColor="@android:color/darker_gray"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/splitLable"
-        app:layout_constraintStart_toEndOf="@+id/splitLable"
-        tools:text="°F" />
+        tools:text="°C" />
 
     <TextView
         android:id="@+id/splitLable"
@@ -38,22 +46,19 @@
         android:text="/"
         android:textColor="@android:color/darker_gray"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/celsiusSettings"
-        app:layout_constraintStart_toEndOf="@+id/celsiusSettings"
         tools:text="/" />
 
     <TextView
-        android:id="@+id/celsiusSettings"
+        android:id="@+id/fahrenheitSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="°C"
-        android:textColor="@android:color/darker_gray"
+        android:layout_marginStart="8dp"
+        android:text="°F"
+        android:textColor="#ffffff"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locationRecycleListView"
-        tools:text="°C" />
+        tools:text="°F" />
+
+</LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addLocationButton"
