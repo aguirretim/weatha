@@ -55,12 +55,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "WeatherApp";//MainActivity.class.getSimpleName();
     CurrentWeather currentWeather;
     FusedLocationProviderClient fusedLocationProviderClient;
-    double latitude = 47.606209;
-    double longitude = -122.332069;
+    double latitude ;
+    double longitude ;
     boolean isMetric = false;
     boolean isDetailView = false;
     boolean isSettingView = false;
     boolean isLocationView = false;
+    boolean isfirstrun = true;
+
     String units = "imperial";
     String country;
     String city;
@@ -101,6 +103,23 @@ public class MainActivity extends AppCompatActivity {
             units = "metric";
         }
 
+       // checkWeatherPerm();
+        //getLocation();
+        checkFirstRun();
+
+
+
+
+
+
+
+    }
+
+    /****************************************
+     * Methods and Actions that do things  *
+     ****************************************/
+
+    public void checkWeatherPerm(){
         //TODO if the user saves multiple locations all of those lat/longs should be saved in the shared preferences
         //if sharedPrefs doesnt let you save an array you can just reformat the data as a string
         //45,78|65,87
@@ -117,23 +136,12 @@ public class MainActivity extends AppCompatActivity {
             //When Permission Denied
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
-            latitude = 47.606209;
-            longitude = -122.332069;
+           // createLocationSettingsFragment();
         }
-
-        if (isMetric == true) {
-            units = "metric";
-
-        }
-
-        getWeatherData(0);
 
 
     }
 
-    /****************************************
-     * Methods and Actions that do things  *
-     ****************************************/
     //this takes in a number which represents what screen we want to refresh
     //0 is the main
     //1
@@ -227,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.container, MainFragment.newInstance(c));
         fragmentTransaction.addToBackStack("Main");
         fragmentTransaction.commit();
+
     }
 
     public void createAddLocationFragment() {
@@ -285,6 +294,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void createFirstTimeLoadFragment() {
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, InitialLocationAuthorization.newInstance("", ""))
+                .commitNow();
+
+    }
+
     public void backToMainFragment() {
         if (isDetailView == true) {
             getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.tempDetailView)).commit();
@@ -311,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-
             return;
         }
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -333,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
                                     location.getLongitude(),
                                     1
                             );
-
+                            if (addresss != null && !addresss.isEmpty()) {
                             latitude = addresss.get(0).getLatitude();
                             longitude = addresss.get(0).getLongitude();
                             country = addresss.get(0).getCountryName();
@@ -344,22 +360,22 @@ public class MainActivity extends AppCompatActivity {
                                     + longitude + " " +
                                     country + " " +
                                     city + " " + locAddress);
+                            if(addresss != null && !addresss.isEmpty()){
+                            getWeatherData(0);
 
+                            }}else {
+                                getLocation();
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
                     }
                 } else {
                     // Task failed with an exception
                     Exception exception = task.getException();
                 }
-
-
             }
         });
-
-
     }
 
     private ArrayList<CurrentWeather> getHourlyWeatherArray(String jSonData) throws JSONException {
@@ -497,6 +513,44 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void checkFirstRun() {
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_VERSION_CODE_KEY = "version_code";
+        final int DOESNT_EXIST = -1;
+
+        // Get current version code
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+
+            // This is just a normal run
+            checkWeatherPerm();
+            Toast.makeText(this, "normalrun ", Toast.LENGTH_SHORT).show();
+            return;
+
+        } else if (savedVersionCode == DOESNT_EXIST) {
+
+            // TODO This is a new install (or the user cleared the shared preferences)
+            Toast.makeText(this, "freshinstall ", Toast.LENGTH_SHORT).show();
+            createFirstTimeLoadFragment();
+
+        } else if (currentVersionCode > savedVersionCode) {
+
+            // TODO This is an upgrade
+            Toast.makeText(this, "updateinstall ", Toast.LENGTH_SHORT).show();
+            createFirstTimeLoadFragment();
+        }
+
+        // Update the shared preferences with the current version code
+        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
+    }
+
     public void onResume() {
         super.onResume();
     }
@@ -521,5 +575,6 @@ public class MainActivity extends AppCompatActivity {
         //super.onBackPressed();  // optional depending on your needs
 
     }
+
 
 }

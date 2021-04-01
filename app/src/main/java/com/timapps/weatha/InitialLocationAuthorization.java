@@ -32,6 +32,9 @@ public class InitialLocationAuthorization extends Fragment {
     private ImageView imageView;
     private Button enableLocationButton;
     private Button disableLocationButton;
+    MainActivity activity;
+
+
     public InitialLocationAuthorization() {
         // Required empty public constructor
     }
@@ -80,10 +83,12 @@ public class InitialLocationAuthorization extends Fragment {
         enableLocationButton = (Button) view.findViewById(R.id.enableLocationButton);
         disableLocationButton = (Button) view.findViewById(R.id.disableLocationButton);
 
+        activity = (MainActivity) getActivity();
+
         enableLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                activity.checkWeatherPerm();
 
             }
         });
@@ -91,7 +96,7 @@ public class InitialLocationAuthorization extends Fragment {
         disableLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                activity.createAddLocationFragment();
 
             }
         });

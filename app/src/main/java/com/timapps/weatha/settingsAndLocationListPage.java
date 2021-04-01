@@ -89,10 +89,18 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
 
         } else {
             Toast.makeText(getActivity(), "No data in the location database", Toast.LENGTH_SHORT).show();
+            activity.createAddLocationFragment();
         }
 
         locationRecycleListView.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.VERTICAL, false));
 
+        addLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.createAddLocationFragment();
+
+            }
+        });
 
         return view;
 
