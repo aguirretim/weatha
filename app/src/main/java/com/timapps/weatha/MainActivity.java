@@ -74,14 +74,16 @@ public class MainActivity extends AppCompatActivity {
     HourlyTempRecycleAdapter HourlyTempRecycleAdapter;
     RecyclerView RecycleListView;
     private final int REQUEST_CODE_LOCATION_PERMISSION = 44;
-    String apiKey = "Api Key goes Here";
-    
+    // Weather data now comes from Open-Meteo (https://open-meteo.com) — free and keyless.
+    // (OpenWeatherMap's One Call 2.5 endpoint this app used was shut down.)
 
-    String forecastURL = "https://api.openweathermap.org/data/2.5/onecall?" +
-            "lat=" + latitude + "&" +
-            "lon=" + longitude + "&" +
-            "appid=" + apiKey + "&" +
-            "units=" + units;
+    String forecastURL = "https://api.open-meteo.com/v1/forecast?" +
+            "latitude=" + latitude + "&" +
+            "longitude=" + longitude + "&" +
+            "current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&" +
+            "hourly=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&" +
+            "daily=weather_code,temperature_2m_max,temperature_2m_min&" +
+            "temperature_unit=fahrenheit&timezone=auto&timeformat=unixtime&forecast_days=7";
 
     /**************************************
      * Main initialized Method.  *
@@ -153,11 +155,14 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 units = "imperial";
             }
-            forecastURL = "https://api.openweathermap.org/data/2.5/onecall?" +
-                    "lat=" + latitude + "&" +
-                    "lon=" + longitude + "&" +
-                    "appid=" + apiKey + "&" +
-                    "units=" + units;
+            String tempUnit = isMetric ? "celsius" : "fahrenheit";
+            forecastURL = "https://api.open-meteo.com/v1/forecast?" +
+                    "latitude=" + latitude + "&" +
+                    "longitude=" + longitude + "&" +
+                    "current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&" +
+                    "hourly=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&" +
+                    "daily=weather_code,temperature_2m_max,temperature_2m_min&" +
+                    "temperature_unit=" + tempUnit + "&timezone=auto&timeformat=unixtime&forecast_days=7";
 
             OkHttpClient client = new OkHttpClient();
 
@@ -382,38 +387,29 @@ public class MainActivity extends AppCompatActivity {
 
         JSONObject forecast = new JSONObject(jSonData);
         String timezone = forecast.getString("timezone");
-        JSONArray jWeatherArray = forecast.getJSONArray("hourly");
+        JSONObject hourly = forecast.getJSONObject("hourly");
+        JSONArray times = hourly.getJSONArray("time");
+        JSONArray temps = hourly.getJSONArray("temperature_2m");
+        JSONArray feels = hourly.optJSONArray("apparent_temperature");
+        JSONArray hums = hourly.optJSONArray("relative_humidity_2m");
+        JSONArray codes = hourly.getJSONArray("weather_code");
         ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<>();
 
-        if (jWeatherArray.length() != 0) { //this represents the number of rows in the database
-
-
-            ArrayList<JSONObject> listdata = new ArrayList<>();
-
-            if (jWeatherArray != null) {
-                for (int i = 0; i < jWeatherArray.length(); i++) {
-                    listdata.add(jWeatherArray.getJSONObject(i));
-                }
-            }
-
-            for (JSONObject jHourlyweather : listdata
-            ) {
-                JSONArray jjWeatherArray = jHourlyweather.getJSONArray("weather");
-                JSONObject JJweather = (JSONObject) jjWeatherArray.get(0);
-                CurrentWeather jWeather = new CurrentWeather(city,
-                        JJweather.getString("icon"),
-                        jHourlyweather.getDouble("temp"),
-                        jHourlyweather.getDouble("feels_like"),
-                        jHourlyweather.getDouble("humidity"),
-                        0.0,
-                        JJweather.getString("main"),
-                        JJweather.getString("description"),
-                        jHourlyweather.getLong("dt"),
-                        timezone
-                );
-                hourlyWeatherList.add(jWeather);
-
-            }
+        int count = Math.min(times.length(), 24); // next 24 hours is plenty for the strip
+        for (int i = 0; i < count; i++) {
+            int code = codes.getInt(i);
+            CurrentWeather jWeather = new CurrentWeather(city,
+                    wmoIcon(code),
+                    temps.getDouble(i),
+                    feels != null ? feels.getDouble(i) : temps.getDouble(i),
+                    hums != null ? hums.getDouble(i) : 0.0,
+                    0.0,
+                    wmoMain(code),
+                    wmoDesc(code),
+                    times.getLong(i),
+                    timezone
+            );
+            hourlyWeatherList.add(jWeather);
         }
 
         return hourlyWeatherList;
@@ -426,18 +422,17 @@ public class MainActivity extends AppCompatActivity {
         String timezone = forecast.getString("timezone");
         Log.i(TAG, "From JSON: " + timezone);
         JSONObject current = forecast.getJSONObject("current");
-        JSONArray jWeatherArray = current.getJSONArray("weather");
-        JSONObject weather = (JSONObject) jWeatherArray.get(0);
+        int code = current.optInt("weather_code", 0);
 
         CurrentWeather currentWeather = new CurrentWeather(city,
-                weather.getString("icon"),
-                current.getDouble("temp"),
-                current.getDouble("feels_like"),
-                current.getDouble("humidity"),
+                wmoIcon(code),
+                current.getDouble("temperature_2m"),
+                current.optDouble("apparent_temperature", current.getDouble("temperature_2m")),
+                current.optDouble("relative_humidity_2m", 0.0),
                 0.0,
-                weather.getString("main"),
-                weather.getString("description"),
-                current.getLong("dt"),
+                wmoMain(code),
+                wmoDesc(code),
+                current.getLong("time"),
                 timezone
         );
 
@@ -449,45 +444,97 @@ public class MainActivity extends AppCompatActivity {
         JSONObject forecast = new JSONObject(jSonData);
         String timezone = forecast.getString("timezone");
 
-        JSONArray jDailyWeatherArray = forecast.getJSONArray("daily");
-        ArrayList<JSONObject> listdata = new ArrayList<>();
+        JSONObject daily = forecast.getJSONObject("daily");
+        JSONArray times = daily.getJSONArray("time");
+        JSONArray codes = daily.getJSONArray("weather_code");
+        JSONArray maxT = daily.getJSONArray("temperature_2m_max");
+        JSONArray minT = daily.getJSONArray("temperature_2m_min");
 
-        if (jDailyWeatherArray != null) {
-            for (int i = 0; i < jDailyWeatherArray.length(); i++) {
-                listdata.add(jDailyWeatherArray.getJSONObject(i));
-            }
-        }
-
-
-        for (JSONObject jDailyweather : listdata
-        ) {
-            JSONObject tempJobj = jDailyweather.getJSONObject("temp");
-            JSONArray jjWeatherArray = jDailyweather.getJSONArray("weather");
-            JSONObject JJweather = (JSONObject) jjWeatherArray.get(0);
+        for (int i = 0; i < times.length(); i++) {
+            int code = codes.getInt(i);
             CurrentWeather jWeather = new CurrentWeather(city,
-                    JJweather.getString("icon"),
+                    wmoIcon(code),
                     0.0,
                     0.0,
-                    jDailyweather.getDouble("humidity"),
                     0.0,
-                    JJweather.getString("main"),
-                    JJweather.getString("description"),
-                    jDailyweather.getLong("dt"),
+                    0.0,
+                    wmoMain(code),
+                    wmoDesc(code),
+                    times.getLong(i),
                     timezone
             );
             Log.i(TAG, jWeather.ePochTimeConverter(
                     jWeather.getTime()).getInstance().
                     getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
-            jWeather.setMinTemp(tempJobj.getDouble("min"));
-            jWeather.setMaxTemp(tempJobj.getDouble("max"));
-            /*Double rainNumber = jDailyweather.getDouble("rain");
-            if (rainNumber == null ) {
-                jWeather.setPrecipChance(rainNumber);
-            }*/
+            jWeather.setMinTemp(minT.getDouble(i));
+            jWeather.setMaxTemp(maxT.getDouble(i));
             dailyWeatherList.add(jWeather);
         }
 
         return dailyWeatherList;
+    }
+
+    // ── Open-Meteo uses WMO weather codes; map them to the OWM-style icon strings
+    //    the existing drawables/getIconId() understand, plus human-readable text. ──
+    private String wmoIcon(int code) {
+        if (code == 0 || code == 1) return "01d";
+        if (code == 2) return "02d";
+        if (code == 3) return "04d";
+        if (code == 45 || code == 48) return "50d";
+        if (code >= 51 && code <= 57) return "09d";
+        if (code >= 61 && code <= 67) return "10d";
+        if (code >= 71 && code <= 77) return "13d";
+        if (code >= 80 && code <= 82) return "09d";
+        if (code == 85 || code == 86) return "13d";
+        if (code >= 95) return "11d";
+        return "01d";
+    }
+
+    private String wmoMain(int code) {
+        if (code == 0) return "Clear";
+        if (code == 1) return "Mainly Clear";
+        if (code == 2) return "Partly Cloudy";
+        if (code == 3) return "Overcast";
+        if (code == 45 || code == 48) return "Fog";
+        if (code >= 51 && code <= 57) return "Drizzle";
+        if (code >= 61 && code <= 67) return "Rain";
+        if (code >= 71 && code <= 77) return "Snow";
+        if (code >= 80 && code <= 82) return "Rain Showers";
+        if (code == 85 || code == 86) return "Snow Showers";
+        if (code >= 95) return "Thunderstorm";
+        return "Clear";
+    }
+
+    private String wmoDesc(int code) {
+        switch (code) {
+            case 0: return "clear sky";
+            case 1: return "mainly clear";
+            case 2: return "partly cloudy";
+            case 3: return "overcast";
+            case 45: return "fog";
+            case 48: return "depositing rime fog";
+            case 51: return "light drizzle";
+            case 53: return "moderate drizzle";
+            case 55: return "dense drizzle";
+            case 56: case 57: return "freezing drizzle";
+            case 61: return "slight rain";
+            case 63: return "moderate rain";
+            case 65: return "heavy rain";
+            case 66: case 67: return "freezing rain";
+            case 71: return "slight snow";
+            case 73: return "moderate snow";
+            case 75: return "heavy snow";
+            case 77: return "snow grains";
+            case 80: return "slight rain showers";
+            case 81: return "moderate rain showers";
+            case 82: return "violent rain showers";
+            case 85: return "slight snow showers";
+            case 86: return "heavy snow showers";
+            case 95: return "thunderstorm";
+            case 96: return "thunderstorm with hail";
+            case 99: return "thunderstorm with heavy hail";
+            default: return "clear sky";
+        }
     }
 
     private boolean isNetworkAvailable() {

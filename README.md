@@ -1,9 +1,9 @@
 # Weatha
 
-An Android weather app built in Java that displays current weather conditions and forecasts using the OpenWeatherMap API.
+An Android weather app built in Java that displays current weather conditions and forecasts for your current location.
 
-![Weatha running on-device](docs/screenshot.png)
-*The welcome / location-permission screen on an Android device. Live forecasts require granting location access and an OpenWeatherMap API key.*
+![Weatha showing live weather on-device](docs/screenshot.png)
+*Live weather on an Android phone — the device's location (Bothell), current conditions ("Partly Cloudy 64°"), and a matching icon. Weather now comes from the free, keyless Open-Meteo API.*
 
 ## Features
 - Current temperature, humidity, and conditions
