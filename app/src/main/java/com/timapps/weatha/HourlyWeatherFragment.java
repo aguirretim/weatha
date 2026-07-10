@@ -89,22 +89,14 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recycleListView);
 
-        // The hourly list starts at 12 AM (location-local) today, so the location's
-        // current hour is also its index. Default the strip to that hour so "now" is
-        // shown first, and remember it so the header doesn't flip during the initial
-        // auto-scroll. Use the location's clock (not the device's) so this stays correct
-        // for cities in other timezones.
+        // The hourly list is built starting at the current hour, so index 0 is "now"
+        // and there is nothing earlier to scroll back to. Start the strip at the front.
         final MainActivity act = activity;
-        int locationHour = act.currentWeather.ePochTimeConverter(
-                act.currentWeather.getTime()).get(Calendar.HOUR_OF_DAY);
-        final int currentHourIndex = Math.min(
-                locationHour,
-                Math.max(0, act.hourlyWeatherList.size() - 1));
-        previousFirstIndex = currentHourIndex;
+        previousFirstIndex = 0;
         recycleListView.post(new Runnable() {
             @Override
             public void run() {
-                llManager.scrollToPositionWithOffset(currentHourIndex, 0);
+                llManager.scrollToPositionWithOffset(0, 0);
             }
         });
 

@@ -394,8 +394,21 @@ public class MainActivity extends AppCompatActivity {
         JSONArray codes = hourly.getJSONArray("weather_code");
         ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<>();
 
-        int count = Math.min(times.length(), 48); // today + tomorrow, so the strip can scroll into the next day
-        for (int i = 0; i < count; i++) {
+        // Start the strip at the current hour so the user can't scroll back into
+        // hours that have already passed. The current-hour slot is the last hourly
+        // timestamp at or before "now" (from the API's current reading).
+        long nowEpoch = forecast.getJSONObject("current").optLong("time", times.getLong(0));
+        int startIndex = 0;
+        for (int i = 0; i < times.length(); i++) {
+            if (times.getLong(i) <= nowEpoch) {
+                startIndex = i;
+            } else {
+                break;
+            }
+        }
+
+        int end = Math.min(times.length(), startIndex + 48); // ~2 days ahead from now
+        for (int i = startIndex; i < end; i++) {
             int code = codes.getInt(i);
             CurrentWeather jWeather = new CurrentWeather(city,
                     wmoIcon(code),
