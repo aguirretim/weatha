@@ -2,6 +2,9 @@
 
 An Android weather app built in Java that displays current weather conditions and forecasts using the OpenWeatherMap API.
 
+![Weatha running on-device](docs/screenshot.png)
+*The welcome / location-permission screen on an Android device. Live forecasts require granting location access and an OpenWeatherMap API key.*
+
 ## Features
 - Current temperature, humidity, and conditions
 - Location-based weather lookup
