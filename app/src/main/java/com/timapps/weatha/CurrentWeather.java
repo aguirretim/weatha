@@ -258,11 +258,17 @@ public class CurrentWeather implements Parcelable {
         //You could start with a string representation of epoch
         long epoch = pTime;
         //System.out.println("Convert Epoch " + epoch + " to date: ");
-        Date d = new Date(epoch * 1000); //convert epoch seconds to microseconds
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        //Here you say to java the initial timezone. This is the secret
-        // sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Calendar cal = Calendar.getInstance();
+        Date d = new Date(epoch * 1000); //convert epoch seconds to milliseconds
+        // Build the calendar in the *location's* timezone (from the API), not the
+        // device's. Open-Meteo returns each timestamp at the forecast location's local
+        // time, so formatting them in the phone's timezone shifted the day/hour whenever
+        // you viewed a place in a different timezone than the device.
+        Calendar cal;
+        if (timeZone != null && !timeZone.isEmpty()) {
+            cal = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        } else {
+            cal = Calendar.getInstance();
+        }
         cal.setTime(d);
 
 

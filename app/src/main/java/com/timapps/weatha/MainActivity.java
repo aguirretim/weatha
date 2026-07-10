@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         //try to get any saved data from shared pref
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         isMetric = sharedPref.getBoolean("METRIC_SETTING", false); //default to farenheit
-        Toast.makeText(this, "Got METRIC_SETTING: " + isMetric, Toast.LENGTH_SHORT).show();
         if (isMetric) {
             units = "metric";
         }
@@ -395,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
         JSONArray codes = hourly.getJSONArray("weather_code");
         ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<>();
 
-        int count = Math.min(times.length(), 24); // next 24 hours is plenty for the strip
+        int count = Math.min(times.length(), 48); // today + tomorrow, so the strip can scroll into the next day
         for (int i = 0; i < count; i++) {
             int code = codes.getInt(i);
             CurrentWeather jWeather = new CurrentWeather(city,
@@ -578,19 +577,16 @@ public class MainActivity extends AppCompatActivity {
 
             // This is just a normal run
             checkWeatherPerm();
-            Toast.makeText(this, "normalrun ", Toast.LENGTH_SHORT).show();
             return;
 
         } else if (savedVersionCode == DOESNT_EXIST) {
 
-            // TODO This is a new install (or the user cleared the shared preferences)
-            Toast.makeText(this, "freshinstall ", Toast.LENGTH_SHORT).show();
+            // This is a new install (or the user cleared the shared preferences)
             createFirstTimeLoadFragment();
 
         } else if (currentVersionCode > savedVersionCode) {
 
-            // TODO This is an upgrade
-            Toast.makeText(this, "updateinstall ", Toast.LENGTH_SHORT).show();
+            // This is an upgrade
             createFirstTimeLoadFragment();
         }
 

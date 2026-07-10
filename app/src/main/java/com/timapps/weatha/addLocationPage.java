@@ -1,5 +1,7 @@
 package com.timapps.weatha;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,8 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,6 +84,20 @@ public class addLocationPage extends Fragment {
 
         MainActivity activity = (MainActivity) getActivity();
 
+        searchView.setQueryHint("Search a city…");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchLocation(activity, query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,5 +106,55 @@ public class addLocationPage extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * Turn a typed place name into coordinates (via Geocoder) and load that
+     * location's weather. Runs the lookup off the UI thread to avoid an ANR.
+     */
+    private void searchLocation(final MainActivity activity, final String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return;
+        }
+        if (!Geocoder.isPresent()) {
+            Toast.makeText(activity, "Location search isn't available on this device",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
+                try {
+                    List<Address> matches = geocoder.getFromLocationName(query, 1);
+                    if (matches != null && !matches.isEmpty()) {
+                        Address a = matches.get(0);
+                        activity.latitude = a.getLatitude();
+                        activity.longitude = a.getLongitude();
+                        activity.city = a.getLocality() != null ? a.getLocality()
+                                : (a.getFeatureName() != null ? a.getFeatureName() : query);
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.getWeatherData(0);
+                            }
+                        });
+                    } else {
+                        showToast(activity, "Couldn't find \"" + query + "\"");
+                    }
+                } catch (IOException e) {
+                    showToast(activity, "Search failed — check your connection");
+                }
+            }
+        }).start();
+    }
+
+    private void showToast(final MainActivity activity, final String msg) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

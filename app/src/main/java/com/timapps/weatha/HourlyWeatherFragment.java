@@ -30,10 +30,10 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
     RecyclerView recycleListView;
     public ArrayList<CurrentWeather> hourlyWeatherList = new ArrayList<CurrentWeather>();
     public ArrayList<CurrentWeather> dailyWeatherList = new ArrayList<CurrentWeather>();
-    //start this at 0 because the first time the scroll runs it will be on 0, this way
-    //prev will be equal to the current and it wont register a change
+    private static final String DEGREE = String.valueOf((char) 0x00B0);
+    // Tracks the first-visible hour index so the day header only updates when it
+    // actually changes, instead of on every scroll frame.
     private int previousFirstIndex = 0;
-    private int dayShown = 0; //this variable represents the day we are showing in comparison to the day we're on
 
     public static HourlyWeatherFragment newInstance() {
         HourlyWeatherFragment fragment = new HourlyWeatherFragment();
@@ -47,11 +47,6 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
         super.onCreate(savedInstanceState);
 
     }
-
-    int nexdayCounter = 0;
-    int dayCounter = 0;
-    Boolean isFirstimeNewDay = false;
-    Boolean issecoundTimeNewDay = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,73 +81,53 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
             Toast.makeText(getActivity(), "No data in the database", Toast.LENGTH_SHORT).show();
         }
 
-        LinearLayoutManager llManager = new LinearLayoutManager(this.getActivity(),
+        final LinearLayoutManager llManager = new LinearLayoutManager(this.getActivity(),
                 LinearLayoutManager.HORIZONTAL, false);
         recycleListView.setLayoutManager(llManager);
 
-        //Snap helper makes the items snap  in the view instead of having in betweens
+        //Snap helper makes the items snap in the view instead of having in betweens
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recycleListView);
 
+        // The hourly list starts at 12 AM (location-local) today, so the location's
+        // current hour is also its index. Default the strip to that hour so "now" is
+        // shown first, and remember it so the header doesn't flip during the initial
+        // auto-scroll. Use the location's clock (not the device's) so this stays correct
+        // for cities in other timezones.
+        final MainActivity act = activity;
+        int locationHour = act.currentWeather.ePochTimeConverter(
+                act.currentWeather.getTime()).get(Calendar.HOUR_OF_DAY);
+        final int currentHourIndex = Math.min(
+                locationHour,
+                Math.max(0, act.hourlyWeatherList.size() - 1));
+        previousFirstIndex = currentHourIndex;
+        recycleListView.post(new Runnable() {
+            @Override
+            public void run() {
+                llManager.scrollToPositionWithOffset(currentHourIndex, 0);
+            }
+        });
+
+        // Update the day header straight from the first-visible hour's own date.
+        // (The old code tracked direction with a running counter that flipped every
+        // time "12 AM" scrolled past, which jumped around when scrolling backward.)
         recycleListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView,
-                                   int dx, int dy) {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-
                 int firstVisibleIndex = llManager.findFirstCompletelyVisibleItemPosition();
-
-                if (firstVisibleIndex != previousFirstIndex) {
-
-                    //if we just scrolled to 12am see which way we were going
-                    Log.d("SCROLL", "First: " + firstVisibleIndex);
-                    CurrentWeather c = activity.hourlyWeatherList.get(firstVisibleIndex);
-                    String timeStr = currentWeatherToTimeString(c);
-                    if (timeStr.equals("12 AM")) {
-                        //now that they are different we can figure out which way it was scrolled
-                        //pick a way to do the subtraction and then do the sample math to get the direction
-                        //subtraction will be currentValue - previousValue
-                        // 0 1 2 3 -->
-                        //if im on 1 and I scroll to 2 then-> prev = 1 curr = 2
-                        //curr - prev -> 2 - 1 is positive
-                        //positive means we scrolled our finger to the left which is moving forward in time
-                        //if im on 1 and I scroll to 0 then-> prev = 1 and curr = 0
-                        //curr - prev -> 0 - 1 is negative
-                        //negative means we scrolled our finger to the right which is moving backward in time
-
-                        if (firstVisibleIndex - previousFirstIndex > 0) {
-                            Log.d("SCROLL", "MOVING FORWARD");
-                            dayShown++;
-                            //move on to the next day
-                        } else {
-                            Log.d("SCROLL", "MOVING BACKWARD");
-                            dayShown--;
-                        }
-
-                        Calendar futureDay = activity.currentWeather.ePochTimeConverter(
-                                activity.currentWeather.getTime()).getInstance();
-
-                        futureDay.add(Calendar.DAY_OF_WEEK, dayShown);
-                        String displayText = futureDay.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) + "\n";
-                        if (dayShown == -1) {
-                            displayText += "YESTERDAY";
-                        } else if (dayShown == 0) {
-                            displayText += "TODAY";
-                        } else if (dayShown == 1) {
-                            displayText += "TOMORROW";
-                        } else if (dayShown == 2) {
-                            displayText += futureDay.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + futureDay.get(Calendar.DAY_OF_MONTH);
-                        }
-                        todayHeaderText.setText(displayText);
-
-                        Log.d("SCROLL", "First: " + firstVisibleIndex);
-
-                    }
+                if (firstVisibleIndex == RecyclerView.NO_POSITION) {
+                    firstVisibleIndex = llManager.findFirstVisibleItemPosition();
                 }
-
+                if (firstVisibleIndex < 0 || firstVisibleIndex >= act.hourlyWeatherList.size()) {
+                    return;
+                }
+                if (firstVisibleIndex == previousFirstIndex) {
+                    return;
+                }
                 previousFirstIndex = firstVisibleIndex;
-
+                updateDayHeader(act, firstVisibleIndex);
             }
         });
 
@@ -161,19 +136,48 @@ public class HourlyWeatherFragment extends Fragment implements HourlyTempRecycle
 
     }
 
+    /** Set the day header (and that day's high/low) from a specific hourly item's real date. */
+    private void updateDayHeader(MainActivity activity, int index) {
+        CurrentWeather item = activity.hourlyWeatherList.get(index);
+        Calendar itemCal = item.ePochTimeConverter(item.getTime());
+        Calendar todayCal = activity.currentWeather.ePochTimeConverter(activity.currentWeather.getTime());
+        int diff = dayDifference(todayCal, itemCal);
+
+        String label = itemCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) + "\n";
+        if (diff == 0) {
+            label += "TODAY";
+        } else if (diff == 1) {
+            label += "TOMORROW";
+        } else if (diff == -1) {
+            label += "YESTERDAY";
+        } else {
+            label += itemCal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
+                    + " " + itemCal.get(Calendar.DAY_OF_MONTH);
+        }
+        todayHeaderText.setText(label);
+
+        // Show that day's high/low when the daily forecast has it (indexed from today).
+        if (diff >= 0 && diff < activity.dailyWeatherList.size()) {
+            highTempText.setText("High " + (int) activity.dailyWeatherList.get(diff).getMaxTemp() + DEGREE);
+            lowTempText.setText("Low " + (int) activity.dailyWeatherList.get(diff).getMinTemp() + DEGREE);
+        }
+    }
+
+    /** Whole-day difference (to - from): 0 = same day, 1 = next day, -1 = previous day. */
+    private int dayDifference(Calendar from, Calendar to) {
+        Calendar a = (Calendar) from.clone();
+        Calendar b = (Calendar) to.clone();
+        a.set(Calendar.HOUR_OF_DAY, 0); a.set(Calendar.MINUTE, 0);
+        a.set(Calendar.SECOND, 0); a.set(Calendar.MILLISECOND, 0);
+        b.set(Calendar.HOUR_OF_DAY, 0); b.set(Calendar.MINUTE, 0);
+        b.set(Calendar.SECOND, 0); b.set(Calendar.MILLISECOND, 0);
+        long ms = b.getTimeInMillis() - a.getTimeInMillis();
+        return (int) Math.round(ms / (1000.0 * 60 * 60 * 24));
+    }
+
     @Override
     public void onClickPerformed(int postion) {
 
 
-    }
-
-    private String currentWeatherToTimeString(CurrentWeather vCurrentWeather) {
-        return vCurrentWeather.midNoonConverter((vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime())
-                .get(vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime()).HOUR_OF_DAY))) +
-                " " +
-                vCurrentWeather.amPmFinder(vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime())
-                        .get(vCurrentWeather.ePochTimeConverter(vCurrentWeather.getTime()).AM_PM))
-                +
-                "";
     }
 }

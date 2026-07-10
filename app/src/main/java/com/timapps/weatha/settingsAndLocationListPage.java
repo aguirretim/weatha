@@ -55,6 +55,9 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
         if (activity.isMetric == true) {
             celsiusSettings.setTextColor(Color.parseColor("#FFFFFF"));
             fahrenheitSettings.setTextColor(Color.parseColor("#AAAAAA"));
+        } else {
+            fahrenheitSettings.setTextColor(Color.parseColor("#FFFFFF"));
+            celsiusSettings.setTextColor(Color.parseColor("#AAAAAA"));
         }
         boxTempType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +71,6 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
                     activity.getWeatherData(SETTINGS_AND_LOCATION_PAGE);
                     editor.putBoolean("METRIC_SETTING", true);
                     editor.apply();
-                    Toast.makeText(activity, "metric setting set true", Toast.LENGTH_SHORT).show();
                 } else if (activity.isMetric == true) {
                     activity.isMetric = false;
                     celsiusSettings.setTextColor(Color.parseColor("#AAAAAA"));
@@ -76,7 +78,6 @@ public class settingsAndLocationListPage extends Fragment implements LocationLis
                     activity.getWeatherData(SETTINGS_AND_LOCATION_PAGE);
                     editor.putBoolean("METRIC_SETTING", false);
                     editor.apply(); //actually save it
-                    Toast.makeText(activity, "metric setting set false", Toast.LENGTH_SHORT).show();
                 }
             }
         });

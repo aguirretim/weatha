@@ -129,15 +129,9 @@ public class MainFragment extends Fragment {
             }
         });
 
-        MainActivity finalActivity = activity;
         weatherContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(finalActivity,
-                        "Refreshing data not working yet",
-                        Toast.LENGTH_LONG
-                ).show();
-
                 weatherContainer.setVisibility(View.INVISIBLE);
                 cityContainer.setVisibility(View.INVISIBLE);
                 activity.createTempDetailFragment(currentWeatherFromMainActivity);
