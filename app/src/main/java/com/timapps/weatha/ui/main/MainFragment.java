@@ -37,7 +37,7 @@ public class MainFragment extends Fragment {
     private ImageView weatherIcon;
     private TextView cityLableText;
     private TextView artCreditText;
-    private ImageView weatherDataCreditImage;
+    private TextView weatherDataCreditImage;
     private ConstraintLayout weatherContainer;
     private ConstraintLayout cityContainer;
 
@@ -92,7 +92,7 @@ public class MainFragment extends Fragment {
         weatherIcon = (ImageView) view.findViewById(R.id.weatherIcon);
         cityLableText = (TextView) view.findViewById(R.id.todayHeaderText);
         artCreditText = (TextView) view.findViewById(R.id.artCreditText);
-        weatherDataCreditImage = (ImageView) view.findViewById(R.id.weatherDataCreditImage);
+        weatherDataCreditImage = (TextView) view.findViewById(R.id.weatherDataCreditImage);
         weatherContainer = (ConstraintLayout) view.findViewById(R.id.weatherContainer);
         cityContainer = (ConstraintLayout) view.findViewById(R.id.cityContainer);
 
@@ -114,7 +114,7 @@ public class MainFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("https://openweathermap.org"));
+                intent.setData(Uri.parse("https://open-meteo.com"));
                 startActivity(intent);
             }
         });

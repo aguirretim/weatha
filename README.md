@@ -13,17 +13,24 @@ An Android weather app built in Java that displays current weather conditions an
 | Feels-like and humidity, an hourly strip, and a 5-day daily forecast with highs/lows. | Saved locations with the current temp, a °C / °F toggle, and an add-location button. |
 
 ## Features
-- Current temperature, humidity, and conditions
-- Location-based weather lookup
+- Current temperature, feels-like, humidity, and conditions
+- Hourly strip and a 5-day daily forecast with highs/lows
+- Location-based weather lookup for your current location
+- °C / °F toggle and saved locations
 - Clean and intuitive UI
+
+## Weather data
+Weather comes from the **[Open-Meteo](https://open-meteo.com) API**, which is free and
+requires **no API key**. (The app originally used OpenWeatherMap's One Call 2.5 endpoint,
+which was shut down; it has since been migrated to Open-Meteo.)
 
 ## Tech Stack
 - **Language**: Java
 - **Platform**: Android
-- **API**: OpenWeatherMap
+- **Weather API**: Open-Meteo (free, keyless)
 - **Build**: Gradle / Android Studio
 
 ## Getting Started
-1. Get a free API key from [openweathermap.org](https://openweathermap.org/api)
-2. Add your key to the project config
-3. Open in Android Studio and run on a device or emulator
+1. Clone the repo and open it in Android Studio
+2. Run on a device or emulator — no API key or extra setup needed
+3. Grant location access so the app can show weather for where you are
